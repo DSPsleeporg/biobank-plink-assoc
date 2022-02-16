@@ -68,9 +68,9 @@ public:
     //Enquire phenotype state of UID. 
     // First entry returns whether the enquiry is successful. Second returns the value
     //Scalar version: 
-    virtual std::pair<bool,double> find_scalar_state(const std::string& uid_str)const = 0;
+    std::pair<bool,double> find_scalar_state(const std::string& uid_str)const;
     //Discrete version: 
-    virtual std::pair<bool,int> find_discrete_state(const std::string& uid_str)const = 0;
+    std::pair<bool,int> find_discrete_state(const std::string& uid_str)const;
 };
 class Discrete_phenotype_map : public Phenotype_map{
 private:
@@ -90,9 +90,9 @@ public:
     //Enquire phenotype state of UID. 
     // First entry returns whether the enquiry is successful. Second returns the value
     //Scalar version: 
-    virtual std::pair<bool,double> find_scalar_state(const std::string& uid_str)const = 0;
+    std::pair<bool,double> find_scalar_state(const std::string& uid_str)const;
     //Discrete version: 
-    virtual std::pair<bool,int> find_discrete_state(const std::string& uid_str)const = 0;
+    std::pair<bool,int> find_discrete_state(const std::string& uid_str)const;
     std::unordered_set<std::string> get_raw_phenotype()const;
     //Sets the mapping from raw phenotype to binary states: return status of map.
     Phenotype_status set_phenotype_map(const std::unordered_set<std::string>& positive_phenotypes);

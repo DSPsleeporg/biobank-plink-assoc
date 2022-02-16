@@ -111,3 +111,74 @@ std::pair<bool,double> Scalar_phenotype_map::find_scalar_state(const std::string
         return std::make_pair(true,map_itr->second);
     }
 }
+std::pair<bool,int> Scalar_phenotype_map::find_discrete_state(const std::string& uid_str)const{
+    //Finding discrete state is not possible. 
+    return std::make_pair(false,0);
+}
+bool Discrete_phenotype_map::read_phenotype(const Phenotype_flags& phenotype_flags){
+    //Check that this map is in an state that allows read: For discrete case, only empty and bisect_wait permits new input.
+    if (_phenotype_status != Phenotype_status::bisect_wait && _phenotype_status != Phenotype_status::empty){
+        return false;
+    }
+    //Open file for read: 
+    std::fstream pt_fs;//phenotype filestream
+    pt_fs.open(phenotype_flags.filename,std::ios::in);
+    if (!pt_fs.is_open()){
+        return false;
+    }
+    //Read lines, and add to uid_raw_map:
+    std::string cur_line;//We do not expect phenotype line to be long. 
+    while (!pt_fs.eof()){
+        std::getline(pt_fs,cur_line);
+        const auto parse_result = phenotype_flags.parse_line(cur_line);
+        //As an empty line commonly follows a text file, we disregard this line when both UID and phenotype
+        // were not found. 
+        if (parse_result.first == "" && parse_result.second == ""){
+            continue;
+        }
+        auto map_itr = uid_raw_map.find(parse_result.first);
+        if (map_itr != uid_raw_map.end()){
+            //Such entry already exists. As UID should be unique, we assume the data is corrputed. 
+            _phenotype_status = Phenotype_status::spoiled;
+            return false;
+        }
+        else{
+            //Assign phenotype to UID map. 
+            uid_raw_map[parse_result.first] = parse_result.second;
+        }
+    }
+    _phenotype_status = Phenotype_status::bisect_wait;
+    return true;
+}
+Phenotype_status Discrete_phenotype_map::status()const{
+    return _phenotype_status;
+}
+std::ostream& Discrete_phenotype_map::print(std::ostream& os)const{
+    //Per plink phenotype definition: 
+    //3 columns: family ID, individual ID (UID), phenotype:
+    if (status() != Phenotype_status::ready){
+        //Only print when the map is in ready state:
+        return os;
+    }
+    //Iterate through all individuals, output into stream: 
+    for (auto uid_raw_pair : uid_raw_map){
+        os << uid_raw_pair.first << " " << uid_raw_pair.first << " " << raw_bisect_map.at(uid_raw_pair.second) << std::endl;
+    }
+    return os;
+}
+std::pair<bool,double> Discrete_phenotype_map::find_scalar_state(const std::string& uid_str)const{
+    return std::make_pair(false,0.0);
+}
+std::pair<bool,int> Discrete_phenotype_map::find_discrete_state(const std::string& uid_str)const{
+    if (_phenotype_status != Phenotype_status::ready){
+        return std::make_pair(false,0);
+    }
+    auto map_itr = uid_raw_map.find(uid_str);
+    if (map_itr == uid_raw_map.end()){
+        //Not found.
+        return std::make_pair(false,0);
+    }
+    else{
+        return std::make_pair(true,raw_bisect_map.at(map_itr->second));
+    }
+}
