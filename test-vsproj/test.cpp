@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "..\convert\phenotype_convert.h"
+#include "..\convert\genotype_convert.h"
+#include <fstream>
 
 TEST(Phenotype_parse, Initiate) {
     Discrete_phenotype_map discrete_phenotype_map;
@@ -63,7 +65,7 @@ TEST(Phenotype_parse, Discrete_file_parse) {
     }
     EXPECT_FALSE(not_found);
 }
-TEST(Phenotype_parse, Discrete_phenotype_map) {
+TEST(Phenotype_parse, Discrete_phenotype_map_parse) {
     Phenotype_flags sample_flags;
     sample_flags.filename = "sample_phenotype.csv";
     sample_flags.delimiter = ',';
@@ -96,4 +98,76 @@ TEST(Phenotype_parse, Scalar_file_parse) {
     EXPECT_EQ(scalar_phenotype_map.size(), 100);
     EXPECT_EQ(scalar_phenotype_map.status(), Phenotype_status::ready);
     EXPECT_NEAR(34.54154, scalar_phenotype_map.find_scalar_state("1005905_90001_0_0_judging.csv").second, 1e-5);
+}
+TEST(Genotype_subject_parse, Genotype_line_parse) {
+    Genotype_subject_flags gs_flag;
+    std::ifstream fin("Genotype_line_parse_input.txt");
+    std::string genotype_line;
+    std::getline(fin, genotype_line);
+    std::string uid_str;
+    fin >> uid_str;
+    std::string genotype_str;
+    fin >> genotype_str;
+    gs_flag.delimiter = '\t';
+    gs_flag.UID_idx = 1;
+    gs_flag.genotype_idx = 2;
+    const auto parse_result = gs_flag.parse_line(genotype_line);
+    EXPECT_EQ(uid_str, parse_result.first);
+    EXPECT_EQ(genotype_str,parse_result.second);
+}
+TEST(Genotype_map_parse, Genotype_map_line_parse) {
+    Genotype_map_flags gm_flag;
+    std::string gm_line;
+    
+    gm_flag.delimiter = '\t';
+    gm_flag.SNP_idx = 1;
+    gm_flag.base_start_idx = 4;
+    gm_line = "80278591\t10\t0\t\"GAC G\"\t\"0 0\"\t\"G GAC\"\t\"\"";
+    auto parse_result = gm_flag.parse_line_for_original(gm_line);
+    auto proxy_parse_result = gm_flag.parse_line_for_proxy(gm_line);
+    EXPECT_EQ("80278591", parse_result.first);
+    EXPECT_EQ("GAC G", parse_result.second[0]);
+    EXPECT_EQ("0 0", parse_result.second[1]);
+    EXPECT_EQ("G GAC", parse_result.second[2]);
+    EXPECT_EQ("", parse_result.second[3]);
+    EXPECT_EQ("1 2", proxy_parse_result.second[0]);
+    EXPECT_EQ("0 0", proxy_parse_result.second[1]);
+    EXPECT_EQ("2 1", proxy_parse_result.second[2]);
+    EXPECT_EQ("E E", proxy_parse_result.second[3]);
+    gm_line = "2795269\t10\t15\t\"T C\"\t\"C C\"\t\"T T\"\t\"0 0\"";
+    parse_result = gm_flag.parse_line_for_original(gm_line);
+    proxy_parse_result = gm_flag.parse_line_for_proxy(gm_line);
+    EXPECT_EQ("2795269", parse_result.first);
+    EXPECT_EQ("T C", parse_result.second[0]);
+    EXPECT_EQ("C C", parse_result.second[1]);
+    EXPECT_EQ("T T", parse_result.second[2]);
+    EXPECT_EQ("0 0", parse_result.second[3]);
+    EXPECT_EQ("1 2", proxy_parse_result.second[0]);
+    EXPECT_EQ("2 2", proxy_parse_result.second[1]);
+    EXPECT_EQ("1 1", proxy_parse_result.second[2]);
+    EXPECT_EQ("0 0", proxy_parse_result.second[3]);
+    gm_line = "35481888\t10\t12\tG G\tA G\tA A\t0 0";//Quotation Free version
+    parse_result = gm_flag.parse_line_for_original(gm_line);
+    proxy_parse_result = gm_flag.parse_line_for_proxy(gm_line);
+    EXPECT_EQ("35481888", parse_result.first);
+    EXPECT_EQ("G G", parse_result.second[0]);
+    EXPECT_EQ("A G", parse_result.second[1]);
+    EXPECT_EQ("A A", parse_result.second[2]);
+    EXPECT_EQ("0 0", parse_result.second[3]);
+    EXPECT_EQ("1 1", proxy_parse_result.second[0]);
+    EXPECT_EQ("2 1", proxy_parse_result.second[1]);
+    EXPECT_EQ("2 2", proxy_parse_result.second[2]);
+    EXPECT_EQ("0 0", proxy_parse_result.second[3]);
+    gm_line = "80278592\t10\t4\t\"AG\"\t\"0 0\"\t\"A A\"\t\"\"";//No space base version
+    parse_result = gm_flag.parse_line_for_original(gm_line);
+    proxy_parse_result = gm_flag.parse_line_for_proxy(gm_line);
+    EXPECT_EQ("80278592", parse_result.first);
+    EXPECT_EQ("AG", parse_result.second[0]);
+    EXPECT_EQ("0 0", parse_result.second[1]);
+    EXPECT_EQ("A A", parse_result.second[2]);
+    EXPECT_EQ("", parse_result.second[3]);
+    EXPECT_EQ("1 2", proxy_parse_result.second[0]);
+    EXPECT_EQ("0 0", proxy_parse_result.second[1]);
+    EXPECT_EQ("1 1", proxy_parse_result.second[2]);
+    EXPECT_EQ("E E", proxy_parse_result.second[3]);
 }

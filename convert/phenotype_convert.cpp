@@ -1,6 +1,6 @@
 #include "phenotype_convert.h"
 #include <fstream>
-std::pair<int,int> Phenotype_flags::find_idx_range(const std::string& line, const int field_idx)const{
+std::pair<int,int> Line_parser::find_idx_range(const std::string& line, const int field_idx,const char delimiter){
     const int N = line.size();
     int delimiter_count = 0;
     int i = 0;
@@ -28,10 +28,10 @@ std::pair<int,int> Phenotype_flags::find_idx_range(const std::string& line, cons
     return std::make_pair(start_idx,count);
 }
 std::pair<int,int> Phenotype_flags::find_phenotype_idx_range(const std::string& line)const{
-    return find_idx_range(line,phenotype_idx);
+    return find_idx_range(line,phenotype_idx,delimiter);
 }
 std::pair<int,int> Phenotype_flags::find_UID_idx_range(const std::string& line)const{
-    return find_idx_range(line,UID_idx);
+    return find_idx_range(line,UID_idx,delimiter);
 }
 std::pair<std::string,std::string> Phenotype_flags::parse_line(const std::string& line) const{
     const auto phenotype_range = find_phenotype_idx_range(line);

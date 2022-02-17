@@ -20,7 +20,11 @@
 #include <string>
 #include <utility>
 enum class Phenotype_status{empty,bisect_wait,ready,spoiled};
-struct Phenotype_flags{
+class Line_parser {
+public:
+    static std::pair<int, int> find_idx_range(const std::string& line, const int field_idx, const char delimiter);
+};
+struct Phenotype_flags : private Line_parser{
     std::string filename;
     char delimiter;
     int UID_idx;//1-based, consistent with convention used by plink
@@ -33,8 +37,6 @@ struct Phenotype_flags{
     std::pair<int,int> find_UID_idx_range(const std::string& line)const;
     //Returns pair of UID and phenotype
     std::pair<std::string,std::string> parse_line(const std::string& line) const;
-private:
-    std::pair<int,int> find_idx_range(const std::string& line, const int field_idx)const;
 };
 class Phenotype_map{
 public:
