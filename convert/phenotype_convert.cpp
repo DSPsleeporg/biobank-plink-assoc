@@ -85,6 +85,9 @@ bool Scalar_phenotype_map::read_phenotype(const Phenotype_flags& phenotype_flags
 Phenotype_status Scalar_phenotype_map::status()const{
     return _phenotype_status;
 }
+int Scalar_phenotype_map::size()const {
+    return uid_scalar_map.size();
+}
 std::ostream& Scalar_phenotype_map::print(std::ostream& os)const{
     //Per plink phenotype definition: 
     //3 columns: family ID, individual ID (UID), phenotype:
@@ -152,6 +155,9 @@ bool Discrete_phenotype_map::read_phenotype(const Phenotype_flags& phenotype_fla
 }
 Phenotype_status Discrete_phenotype_map::status()const{
     return _phenotype_status;
+}
+int Discrete_phenotype_map::size()const {
+    return uid_raw_map.size();
 }
 std::ostream& Discrete_phenotype_map::print(std::ostream& os)const{
     //Per plink phenotype definition: 

@@ -42,6 +42,8 @@ public:
     virtual bool read_phenotype(const Phenotype_flags& phenotype_flags) = 0;
     //Return status of the Phenotype_map:
     virtual Phenotype_status status()const = 0;
+    //Number of subjects:
+    virtual int size()const = 0;
     //Print result to basic_ostream (console or file stream)
     virtual std::ostream& print(std::ostream& os)const = 0;
     //Enquire phenotype state of UID. 
@@ -63,6 +65,7 @@ public:
     bool read_phenotype(const Phenotype_flags& phenotype_flags);
     //Return status of the Phenotype_map:
     Phenotype_status status()const;
+    int size()const;
     //Print result to basic_ostream (console or file stream)
     std::ostream& print(std::ostream& os)const;
     //Enquire phenotype state of UID. 
@@ -84,6 +87,7 @@ public:
     bool read_phenotype(const Phenotype_flags& phenotype_flags);
     //Return status of the Phenotype_map:
     Phenotype_status status()const;
+    int size()const;
     //Print result to basic_ostream (console or file stream)
     std::ostream& print(std::ostream& os)const;
     //after reading file, returns the set of raw phenotypes:
@@ -93,6 +97,9 @@ public:
     std::pair<bool,double> find_scalar_state(const std::string& uid_str)const;
     //Discrete version: 
     std::pair<bool,int> find_discrete_state(const std::string& uid_str)const;
+
+    //Discrete_phenotype-specific methods: 
+    //Find the set of all states: 
     std::unordered_set<std::string> get_raw_phenotype()const;
     //Sets the mapping from raw phenotype to binary states: return status of map.
     Phenotype_status set_phenotype_map(const std::unordered_set<std::string>& positive_phenotypes);
