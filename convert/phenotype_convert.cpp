@@ -60,6 +60,9 @@ bool Scalar_phenotype_map::read_phenotype(const Phenotype_flags& phenotype_flags
     }
     //Read lines, and add to uid_raw_map:
     std::string cur_line;//We do not expect phenotype line to be long. 
+    if (phenotype_flags.skip_first_row) {
+        std::getline(pt_fs, cur_line);
+    }
     while (!pt_fs.eof()){
         std::getline(pt_fs,cur_line);
         const auto parse_result = phenotype_flags.parse_line(cur_line);
@@ -131,6 +134,9 @@ bool Discrete_phenotype_map::read_phenotype(const Phenotype_flags& phenotype_fla
     }
     //Read lines, and add to uid_raw_map:
     std::string cur_line;//We do not expect phenotype line to be long. 
+    if (phenotype_flags.skip_first_row) {
+        std::getline(pt_fs, cur_line);
+    }
     while (!pt_fs.eof()){
         std::getline(pt_fs,cur_line);
         const auto parse_result = phenotype_flags.parse_line(cur_line);
@@ -187,4 +193,41 @@ std::pair<bool,int> Discrete_phenotype_map::find_discrete_state(const std::strin
     else{
         return std::make_pair(true,raw_bisect_map.at(map_itr->second));
     }
+}
+std::unordered_set<std::string> Discrete_phenotype_map::get_raw_phenotype()const {
+    std::unordered_set<std::string> rval;
+    for (const auto& uid_raw_pair : uid_raw_map) {
+        rval.insert(uid_raw_pair.second);
+    }
+    return rval;
+}
+Phenotype_status Discrete_phenotype_map::set_phenotype_map(const std::unordered_set<std::string>& positive_phenotypes) {
+    //Only allows setting if the system is in bisect_wait or ready state.
+    if (status() != Phenotype_status::bisect_wait && status() != Phenotype_status::ready) {
+        //As the map is not properly set, this map may not match the assumption from the place calling it. 
+        _phenotype_status = Phenotype_status::spoiled;
+        return status();
+    }
+    //Start from a fresh map. 
+    raw_bisect_map = std::unordered_map<std::string, int>();
+    std::unordered_set<std::string> raw_phenotype_set = get_raw_phenotype();
+    //Check if positive_phenotypes is a subset of raw_phenotype_set: 
+    for (const std::string& str : positive_phenotypes) {
+        auto rps_itr = raw_phenotype_set.find(str);
+        if (rps_itr == raw_phenotype_set.end()) {
+            //Contains non-existent flag, assuming positive set not valid. 
+            _phenotype_status = Phenotype_status::spoiled;
+            return status();
+        }
+        else {
+            raw_bisect_map[str] = 1;
+            raw_phenotype_set.erase(rps_itr);
+        }
+    }
+    //Remaining raw phenotypes are negative (0):
+    for (const std::string& str : raw_phenotype_set) {
+        raw_bisect_map[str] = 0;
+    }
+    _phenotype_status = Phenotype_status::ready;
+    return status();
 }

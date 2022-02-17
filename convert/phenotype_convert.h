@@ -23,9 +23,10 @@ enum class Phenotype_status{empty,bisect_wait,ready,spoiled};
 struct Phenotype_flags{
     std::string filename;
     char delimiter;
-    int UID_idx;
-    int phenotype_idx;
+    int UID_idx;//1-based, consistent with convention used by plink
+    int phenotype_idx;//1-based, consistent with convention used by plink
     bool is_discrete;
+    bool skip_first_row;
     //Highlights phenotype_field: (Reserved for GUI features) Returns start_idx,count pair
     std::pair<int,int> find_phenotype_idx_range(const std::string& line)const;
     //Highlights UID field: (Reserved for GUI features) Returns start_idx,count pair
