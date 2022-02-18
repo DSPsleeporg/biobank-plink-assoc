@@ -2,7 +2,8 @@
 #include "..\convert\phenotype_convert.h"
 #include "..\convert\genotype_convert.h"
 #include <fstream>
-
+#include <sstream>
+#include <algorithm>
 TEST(Phenotype_parse, Initiate) {
     Discrete_phenotype_map discrete_phenotype_map;
     EXPECT_EQ(discrete_phenotype_map.status(), Phenotype_status::empty);
@@ -84,6 +85,18 @@ TEST(Phenotype_parse, Discrete_phenotype_map_parse) {
     EXPECT_EQ(1, discrete_phenotype_map.find_discrete_state("1000500_90001_0_0_judging.csv").second);//1
     EXPECT_FALSE(discrete_phenotype_map.find_discrete_state("1000500_90001_0_1_judging.csv").first);//Non-existent
     EXPECT_EQ(0, discrete_phenotype_map.find_discrete_state("1000554_90001_0_0_judging.csv").second);//3b
+    std::ostringstream oss;
+    discrete_phenotype_map.print(oss);
+    std::string phenotype_print_lines_str = oss.str();
+    std::vector<std::string> phenotype_print_lines_vec;
+    EXPECT_EQ(phenotype_print_lines_str.size(), 62 * 100);
+    for (int i = 0; i < 100; i++) {
+        std::string part_line = phenotype_print_lines_str.substr(62 * i, 62);
+        phenotype_print_lines_vec.push_back(part_line);
+    }
+    std::sort(phenotype_print_lines_vec.begin(), phenotype_print_lines_vec.end());
+    EXPECT_EQ(phenotype_print_lines_vec[0], "1000092_90001_0_0_judging.csv 1000092_90001_0_0_judging.csv 1\n");
+    EXPECT_EQ(phenotype_print_lines_vec[1], "1000183_90001_0_0_judging.csv 1000183_90001_0_0_judging.csv 0\n");
 }
 TEST(Phenotype_parse, Scalar_file_parse) {
     Phenotype_flags sample_flags;

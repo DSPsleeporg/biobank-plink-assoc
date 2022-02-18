@@ -93,14 +93,14 @@ int Scalar_phenotype_map::size()const {
 }
 std::ostream& Scalar_phenotype_map::print(std::ostream& os)const{
     //Per plink phenotype definition: 
-    //3 columns: family ID, individual ID (UID), phenotype:
+    //3 columns: family ID (== UID), individual ID (UID), phenotype:
     if (status() != Phenotype_status::ready){
         //Only print when the map is in ready state:
         return os;
     }
     //Iterate through all individuals, output into stream: 
     for (auto uid_scalar_pair : uid_scalar_map){
-        os << uid_scalar_pair.first << " " << uid_scalar_pair.first << " " << uid_scalar_pair.second << std::endl;
+        os << uid_scalar_pair.first << ' ' << uid_scalar_pair.first << ' ' << uid_scalar_pair.second << '\n';
     }
     return os;
 }
