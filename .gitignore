@@ -1,3 +1,5 @@
+#Tex-related intermediates:
+*.synctex.gz
 # C++ objects and libs
 *.slo
 *.lo
