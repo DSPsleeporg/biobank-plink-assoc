@@ -19,8 +19,8 @@ TEST(Phenotype_parse, Discrete_line_parse) {
     sample_flags.phenotype_idx = 28;
     std::string empty_phenotype_line = "1000092_90001_0_0_judging.csv,6.0,404.5,77.77103145344887,116.58333333333331,34.054388687640376,24.0,44.93328387732194,19.33333333333333,29.14856581186952,446.6428571428572,119.06442262361112,1.1666666666666667,0.3726779962499649,130.0,68.5,0.3333333333333333,0.4714045207910317,854.0,43.32724316177986,1439.9999999999961,0.5994024728740283,0.3033564814814815,6.0,63,0,0:0,,,66,11";
     std::string normal_phenotype_line = "1000183_90001_0_0_judging.csv,6.0,368.41666666666674,196.35138923765103,54.91666666666666,52.08439998907756,83.75,135.0116507318288,21.0,29.698484809834994,508.0,139.570054094709,0.8333333333333334,0.37267799624996506,209.5,9.228578799938086,0.5,0.7637626158259734,899.0833333333335,15.186113905655905,1439.9999999999961,0.6486698247354865,0.3168981481481481,6.0,56,0,1:0,3b,,61,9";
-    auto epl_r = sample_flags.parse_line(empty_phenotype_line);//epl_r: empty phenotype line_result
-    auto npl_r = sample_flags.parse_line(normal_phenotype_line);
+    auto epl_r = Phenotype_line_parser::parse_line(sample_flags,empty_phenotype_line);//epl_r: empty phenotype line_result
+    auto npl_r = Phenotype_line_parser::parse_line(sample_flags,normal_phenotype_line);
     EXPECT_EQ(epl_r.first, "1000092_90001_0_0_judging.csv");
     EXPECT_EQ(npl_r.first, "1000183_90001_0_0_judging.csv");
     EXPECT_EQ(epl_r.second, "");
@@ -35,7 +35,7 @@ TEST(Phenotype_parse, Scalar_line_parse) {
     sample_flags.phenotype_idx = 4;
     std::string empty_phenotype_line = "1000092_90001_0_0_judging.csv,6.0,404.5,77.77103145344887,116.58333333333331,34.054388687640376,24.0,44.93328387732194,19.33333333333333,29.14856581186952,446.6428571428572,119.06442262361112,1.1666666666666667,0.3726779962499649,130.0,68.5,0.3333333333333333,0.4714045207910317,854.0,43.32724316177986,1439.9999999999961,0.5994024728740283,0.3033564814814815,6.0,63,0,0:0,,,66,11";
     std::string normal_phenotype_line = "1000183_90001_0_0_judging.csv,6.0,368.41666666666674,196.35138923765103,54.91666666666666,52.08439998907756,83.75,135.0116507318288,21.0,29.698484809834994,508.0,139.570054094709,0.8333333333333334,0.37267799624996506,209.5,9.228578799938086,0.5,0.7637626158259734,899.0833333333335,15.186113905655905,1439.9999999999961,0.6486698247354865,0.3168981481481481,6.0,56,0,1:0,3b,,61,9";
-    auto npl_r = sample_flags.parse_line(normal_phenotype_line);
+    auto npl_r = Phenotype_line_parser::parse_line(sample_flags,normal_phenotype_line);
     EXPECT_EQ(npl_r.first, "1000183_90001_0_0_judging.csv");
     EXPECT_EQ(npl_r.second, "196.35138923765103");
 }
@@ -136,8 +136,8 @@ TEST(Genotype_map_parse, Genotype_map_line_parse) {
     gm_flag.SNP_idx = 1;
     gm_flag.base_start_idx = 4;
     gm_line = "80278591\t10\t0\t\"GAC G\"\t\"0 0\"\t\"G GAC\"\t\"\"";
-    auto parse_result = gm_flag.parse_line_for_original(gm_line);
-    auto proxy_parse_result = gm_flag.parse_line_for_proxy(gm_line);
+    auto parse_result = Genotype_line_parser::parse_line_for_original(gm_flag,gm_line);
+    auto proxy_parse_result = Genotype_line_parser::parse_line_for_proxy(gm_flag,gm_line);
     EXPECT_EQ("80278591", parse_result.first);
     EXPECT_EQ("GAC G", parse_result.second[0]);
     EXPECT_EQ("0 0", parse_result.second[1]);
@@ -148,8 +148,8 @@ TEST(Genotype_map_parse, Genotype_map_line_parse) {
     EXPECT_EQ("2 1", proxy_parse_result.second[2]);
     EXPECT_EQ("E E", proxy_parse_result.second[3]);
     gm_line = "2795269\t10\t15\t\"T C\"\t\"C C\"\t\"T T\"\t\"0 0\"";
-    parse_result = gm_flag.parse_line_for_original(gm_line);
-    proxy_parse_result = gm_flag.parse_line_for_proxy(gm_line);
+    parse_result = Genotype_line_parser::parse_line_for_original(gm_flag, gm_line);
+    proxy_parse_result = Genotype_line_parser::parse_line_for_proxy(gm_flag, gm_line);
     EXPECT_EQ("2795269", parse_result.first);
     EXPECT_EQ("T C", parse_result.second[0]);
     EXPECT_EQ("C C", parse_result.second[1]);
@@ -160,8 +160,8 @@ TEST(Genotype_map_parse, Genotype_map_line_parse) {
     EXPECT_EQ("1 1", proxy_parse_result.second[2]);
     EXPECT_EQ("0 0", proxy_parse_result.second[3]);
     gm_line = "35481888\t10\t12\tG G\tA G\tA A\t0 0";//Quotation Free version
-    parse_result = gm_flag.parse_line_for_original(gm_line);
-    proxy_parse_result = gm_flag.parse_line_for_proxy(gm_line);
+    parse_result = Genotype_line_parser::parse_line_for_original(gm_flag, gm_line);
+    proxy_parse_result = Genotype_line_parser::parse_line_for_proxy(gm_flag, gm_line);
     EXPECT_EQ("35481888", parse_result.first);
     EXPECT_EQ("G G", parse_result.second[0]);
     EXPECT_EQ("A G", parse_result.second[1]);
@@ -172,8 +172,8 @@ TEST(Genotype_map_parse, Genotype_map_line_parse) {
     EXPECT_EQ("2 2", proxy_parse_result.second[2]);
     EXPECT_EQ("0 0", proxy_parse_result.second[3]);
     gm_line = "80278592\t10\t4\t\"AG\"\t\"0 0\"\t\"A A\"\t\"\"";//No space base version
-    parse_result = gm_flag.parse_line_for_original(gm_line);
-    proxy_parse_result = gm_flag.parse_line_for_proxy(gm_line);
+    parse_result = Genotype_line_parser::parse_line_for_original(gm_flag, gm_line);
+    proxy_parse_result = Genotype_line_parser::parse_line_for_proxy(gm_flag, gm_line);
     EXPECT_EQ("80278592", parse_result.first);
     EXPECT_EQ("AG", parse_result.second[0]);
     EXPECT_EQ("0 0", parse_result.second[1]);

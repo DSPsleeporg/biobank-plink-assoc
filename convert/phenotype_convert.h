@@ -24,19 +24,22 @@ class Line_parser {
 public:
     static std::pair<int, int> find_idx_range(const std::string& line, const int field_idx, const char delimiter);
 };
-struct Phenotype_flags : private Line_parser{
+struct Phenotype_flags {
     std::string filename;
     char delimiter;
     int UID_idx;//1-based, consistent with convention used by plink
     int phenotype_idx;//1-based, consistent with convention used by plink
     bool is_discrete;
     bool skip_first_row;
+};
+class Phenotype_line_parser : private Line_parser{
+public:
     //Highlights phenotype_field: (Reserved for GUI features) Returns start_idx,count pair
-    std::pair<int,int> find_phenotype_idx_range(const std::string& line)const;
+    static std::pair<int,int> find_phenotype_idx_range(const Phenotype_flags& phenotype_flags, const std::string& line);
     //Highlights UID field: (Reserved for GUI features) Returns start_idx,count pair
-    std::pair<int,int> find_UID_idx_range(const std::string& line)const;
+    static std::pair<int,int> find_UID_idx_range(const Phenotype_flags& phenotype_flags, const std::string& line);
     //Returns pair of UID and phenotype
-    std::pair<std::string,std::string> parse_line(const std::string& line) const;
+    static std::pair<std::string,std::string> parse_line(const Phenotype_flags& phenotype_flags, const std::string& line);
 };
 class Phenotype_map{
 public:

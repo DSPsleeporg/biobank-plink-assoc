@@ -27,15 +27,15 @@ std::pair<int,int> Line_parser::find_idx_range(const std::string& line, const in
     }
     return std::make_pair(start_idx,count);
 }
-std::pair<int,int> Phenotype_flags::find_phenotype_idx_range(const std::string& line)const{
-    return find_idx_range(line,phenotype_idx,delimiter);
+std::pair<int,int> Phenotype_line_parser::find_phenotype_idx_range(const Phenotype_flags& phenotype_flags, const std::string& line){
+    return find_idx_range(line, phenotype_flags.phenotype_idx, phenotype_flags.delimiter);
 }
-std::pair<int,int> Phenotype_flags::find_UID_idx_range(const std::string& line)const{
-    return find_idx_range(line,UID_idx,delimiter);
+std::pair<int,int> Phenotype_line_parser::find_UID_idx_range(const Phenotype_flags& phenotype_flags, const std::string& line){
+    return find_idx_range(line, phenotype_flags.UID_idx, phenotype_flags.delimiter);
 }
-std::pair<std::string,std::string> Phenotype_flags::parse_line(const std::string& line) const{
-    const auto phenotype_range = find_phenotype_idx_range(line);
-    const auto uid_range = find_UID_idx_range(line);
+std::pair<std::string,std::string> Phenotype_line_parser::parse_line(const Phenotype_flags& phenotype_flags, const std::string& line) {
+    const auto phenotype_range = find_phenotype_idx_range(phenotype_flags,line);
+    const auto uid_range = find_UID_idx_range(phenotype_flags,line);
     std::string uid_str;
     std::string phenotype_str;
     if (uid_range.first < line.size() && uid_range.second > 0){
@@ -65,7 +65,7 @@ bool Scalar_phenotype_map::read_phenotype(const Phenotype_flags& phenotype_flags
     }
     while (!pt_fs.eof()){
         std::getline(pt_fs,cur_line);
-        const auto parse_result = phenotype_flags.parse_line(cur_line);
+        const auto parse_result = Phenotype_line_parser::parse_line(phenotype_flags,cur_line);
         //As an empty line commonly follows a text file, we disregard this line when both UID and phenotype
         // were not found. 
         if (parse_result.first == "" && parse_result.second == ""){
@@ -139,7 +139,7 @@ bool Discrete_phenotype_map::read_phenotype(const Phenotype_flags& phenotype_fla
     }
     while (!pt_fs.eof()){
         std::getline(pt_fs,cur_line);
-        const auto parse_result = phenotype_flags.parse_line(cur_line);
+        const auto parse_result = Phenotype_line_parser::parse_line(phenotype_flags,cur_line);
         //As an empty line commonly follows a text file, we disregard this line when both UID and phenotype
         // were not found. 
         if (parse_result.first == "" && parse_result.second == ""){
