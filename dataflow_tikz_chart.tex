@@ -23,7 +23,7 @@
 \node (aux_DA_up) at($(DA_G_map)!0.7!(DA_G_raw)$) {};
 \node[block,fill=red!20,below of = DA_G_raw](DA_P){Sleep pattern clustering results};
 \node (aux_DA_down) at($(DA_G_raw)!0.7!(DA_P)$) {};
-\node[block,right of = DA_G_map,fill=blue!20](DP_G_mformat){Genotype map ASCII file parse};
+\node[block,right of = DA_G_map,fill=green!20](DP_G_mformat){Genotype map ASCII file parse};
 \node[block,right of = aux_DA_up,fill=blue!20](DP_G_format){Combined Geno/phenotype file conversion};
 \node[block,right of = aux_DA_down,fill=green!20](DP_P_format){Phenotype ASCII file parse};
 \node[block, right of = DP_P_format,fill=red!20](DP_partition_input){Binary partition of clusters.};

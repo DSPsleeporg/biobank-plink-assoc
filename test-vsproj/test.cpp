@@ -184,3 +184,34 @@ TEST(Genotype_proxy_parse, Genotype_proxy_line_parse) {
     EXPECT_EQ("1 1", proxy_parse_result.second[2]);
     EXPECT_EQ("E E", proxy_parse_result.second[3]);
 }
+TEST(Genotype_proxy_parse, Genotype_proxy_file_parse) {
+    Genotype_proxy_flags gp_flag;
+
+    gp_flag.map_filename = "dic_head.dat";
+    gp_flag.skip_first_row = false;
+    gp_flag.delimiter = '\t';
+    gp_flag.SNP_idx = 1;
+    gp_flag.base_start_idx = 4;
+    Genotype_proxy_map genotype_proxy_map;
+    EXPECT_TRUE(genotype_proxy_map.read_map(gp_flag));
+    EXPECT_EQ(genotype_proxy_map.size(), 500);
+    //Check some proxy base pairs: 
+    EXPECT_EQ(genotype_proxy_map.get_SNP_name(499).second, "2836653");
+    EXPECT_EQ(genotype_proxy_map.get_SNP_name(500).first, false);
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(499, 0).second, "1 1");//T T
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(499, 1).second, "2 1");//C T
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(499, 2).second, "2 2");//C C
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(499, 3).second, "0 0");//0 0
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(497, 0).second, "1 1");//A A
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(497, 1).second, "0 0");//0 0
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(497, 2).second, "2 1");//G A
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(497, 3).first, false);//_, CANNOT be read as this index should not exist.
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(376, 0).second, "1 1");//C C
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(376, 1).second, "2 1");//CAGT C
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(376, 2).second, "0 0");//0 0
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(376, 3).second, "2 3");//CAGT CA
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(317, 0).second, "0 0");//0 0
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(317, 1).second, "1 2");//GA
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(317, 2).second, "1 1");//G G
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele(317, 3).first, false);//_, CANNOT be read as this index should not exist.
+}

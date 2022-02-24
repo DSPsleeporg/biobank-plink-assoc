@@ -54,8 +54,20 @@ public:
 };
 class Genotype_proxy_map {
     Genotype_proxy_status _genotype_proxy_status;
+    std::vector<std::vector<std::string>> proxy_allele_matrix;
+    std::vector<std::string> SNP_vec;
 public: 
     //Constructor: creates empty map
     Genotype_proxy_map() :_genotype_proxy_status(Genotype_proxy_status::empty) {}
-    //Number of subjects: 
+    Genotype_proxy_status status()const { return _genotype_proxy_status; }
+    //Creates proxy map by reading file:
+    // Does not allow reading of multiple files, as the genotype map and raw genotype
+    // is only aligned by their index. 
+    bool read_map(const Genotype_proxy_flags& genotype_proxy_flags);
+    //Number of genotype fields: 
+    int size()const;
+    //Find SNP at index: NOTE: allele_pos_idx is 0-based, convention used by UK Biobank!
+    std::pair<bool,std::string> get_SNP_name(const int allele_pos_idx)const;
+    //Find proxy allele at index: NOTE: allele_type_idx is 0-based, convention used by UK Biobank!
+    std::pair<bool, std::string> get_proxy_allele(const int allele_pos_idx, const int allele_type_idx)const;
 };
