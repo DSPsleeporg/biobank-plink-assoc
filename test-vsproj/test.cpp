@@ -128,16 +128,16 @@ TEST(Genotype_subject_parse, Genotype_line_parse) {
     EXPECT_EQ(uid_str, parse_result.first);
     EXPECT_EQ(genotype_str,parse_result.second);
 }
-TEST(Genotype_map_parse, Genotype_map_line_parse) {
-    Genotype_map_flags gm_flag;
-    std::string gm_line;
+TEST(Genotype_proxy_parse, Genotype_proxy_line_parse) {
+    Genotype_proxy_flags gp_flag;
+    std::string gp_line;
     
-    gm_flag.delimiter = '\t';
-    gm_flag.SNP_idx = 1;
-    gm_flag.base_start_idx = 4;
-    gm_line = "80278591\t10\t0\t\"GAC G\"\t\"0 0\"\t\"G GAC\"\t\"\"";
-    auto parse_result = Genotype_line_parser::parse_line_for_original(gm_flag,gm_line);
-    auto proxy_parse_result = Genotype_line_parser::parse_line_for_proxy(gm_flag,gm_line);
+    gp_flag.delimiter = '\t';
+    gp_flag.SNP_idx = 1;
+    gp_flag.base_start_idx = 4;
+    gp_line = "80278591\t10\t0\t\"GAC G\"\t\"0 0\"\t\"G GAC\"\t\"\"";
+    auto parse_result = Genotype_line_parser::parse_line_for_original(gp_flag,gp_line);
+    auto proxy_parse_result = Genotype_line_parser::parse_line_for_proxy(gp_flag,gp_line);
     EXPECT_EQ("80278591", parse_result.first);
     EXPECT_EQ("GAC G", parse_result.second[0]);
     EXPECT_EQ("0 0", parse_result.second[1]);
@@ -147,9 +147,9 @@ TEST(Genotype_map_parse, Genotype_map_line_parse) {
     EXPECT_EQ("0 0", proxy_parse_result.second[1]);
     EXPECT_EQ("2 1", proxy_parse_result.second[2]);
     EXPECT_EQ("E E", proxy_parse_result.second[3]);
-    gm_line = "2795269\t10\t15\t\"T C\"\t\"C C\"\t\"T T\"\t\"0 0\"";
-    parse_result = Genotype_line_parser::parse_line_for_original(gm_flag, gm_line);
-    proxy_parse_result = Genotype_line_parser::parse_line_for_proxy(gm_flag, gm_line);
+    gp_line = "2795269\t10\t15\t\"T C\"\t\"C C\"\t\"T T\"\t\"0 0\"";
+    parse_result = Genotype_line_parser::parse_line_for_original(gp_flag, gp_line);
+    proxy_parse_result = Genotype_line_parser::parse_line_for_proxy(gp_flag, gp_line);
     EXPECT_EQ("2795269", parse_result.first);
     EXPECT_EQ("T C", parse_result.second[0]);
     EXPECT_EQ("C C", parse_result.second[1]);
@@ -159,9 +159,9 @@ TEST(Genotype_map_parse, Genotype_map_line_parse) {
     EXPECT_EQ("2 2", proxy_parse_result.second[1]);
     EXPECT_EQ("1 1", proxy_parse_result.second[2]);
     EXPECT_EQ("0 0", proxy_parse_result.second[3]);
-    gm_line = "35481888\t10\t12\tG G\tA G\tA A\t0 0";//Quotation Free version
-    parse_result = Genotype_line_parser::parse_line_for_original(gm_flag, gm_line);
-    proxy_parse_result = Genotype_line_parser::parse_line_for_proxy(gm_flag, gm_line);
+    gp_line = "35481888\t10\t12\tG G\tA G\tA A\t0 0";//Quotation Free version
+    parse_result = Genotype_line_parser::parse_line_for_original(gp_flag, gp_line);
+    proxy_parse_result = Genotype_line_parser::parse_line_for_proxy(gp_flag, gp_line);
     EXPECT_EQ("35481888", parse_result.first);
     EXPECT_EQ("G G", parse_result.second[0]);
     EXPECT_EQ("A G", parse_result.second[1]);
@@ -171,9 +171,9 @@ TEST(Genotype_map_parse, Genotype_map_line_parse) {
     EXPECT_EQ("2 1", proxy_parse_result.second[1]);
     EXPECT_EQ("2 2", proxy_parse_result.second[2]);
     EXPECT_EQ("0 0", proxy_parse_result.second[3]);
-    gm_line = "80278592\t10\t4\t\"AG\"\t\"0 0\"\t\"A A\"\t\"\"";//No space base version
-    parse_result = Genotype_line_parser::parse_line_for_original(gm_flag, gm_line);
-    proxy_parse_result = Genotype_line_parser::parse_line_for_proxy(gm_flag, gm_line);
+    gp_line = "80278592\t10\t4\t\"AG\"\t\"0 0\"\t\"A A\"\t\"\"";//No space base version
+    parse_result = Genotype_line_parser::parse_line_for_original(gp_flag, gp_line);
+    proxy_parse_result = Genotype_line_parser::parse_line_for_proxy(gp_flag, gp_line);
     EXPECT_EQ("80278592", parse_result.first);
     EXPECT_EQ("AG", parse_result.second[0]);
     EXPECT_EQ("0 0", parse_result.second[1]);
