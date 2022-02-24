@@ -8,19 +8,22 @@
 #include <string>
 #include <utility>
 #include "phenotype_convert.h"
-enum class Genotype_status{empty,table_wait,ready,spoiled};
-struct Genotype_subject_flags : private Line_parser{
+enum class Genotype_map_status{empty,ready,spoiled};
+struct Genotype_subject_flags{
     std::string filename;
     int UID_idx;
     int genotype_idx;
     char delimiter;
     bool skip_first_row;
+};
+class Genotype_subject_line_parser : private Line_parser{
+public:
     //Highlights genotype_field: (Reserved for GUI features) Returns start_idx,count pair
-    std::pair<int, int> find_genotype_idx_range(const std::string& line)const;
+    static std::pair<int, int> find_genotype_idx_range(const Genotype_subject_flags& genotype_subject_flags, const std::string& line);
     //Highlights UID field: (Reserved for GUI features) Returns start_idx,count pair
-    std::pair<int, int> find_UID_idx_range(const std::string& line)const;
+    static std::pair<int, int> find_UID_idx_range(const Genotype_subject_flags& genotype_subject_flags, const std::string& line);
     //Returns pair of UID and genotype:
-    std::pair<std::string, std::string> parse_line(const std::string& line) const;
+    static std::pair<std::string, std::string> parse_line(const Genotype_subject_flags& genotype_subject_flags, const std::string& line);
 };
 struct Genotype_map_flags{
     //Expected genotype map line: 
@@ -48,4 +51,8 @@ public:
     //2. "" should not appear in the result for later use, as "" only appears when there are less than 4 base choices.
     // We map it to "E" to indicate that there may be error. This can be used for detecting misalignment of the maps. 
     static std::pair<std::string, std::vector<std::string>> parse_line_for_proxy(const Genotype_map_flags& genotype_map_flags, const std::string& line);
+};
+class Genotype_map {
+public: 
+
 };

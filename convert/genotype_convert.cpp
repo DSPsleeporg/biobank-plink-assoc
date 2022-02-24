@@ -1,14 +1,14 @@
 #include "genotype_convert.h"
 #include <fstream>
-std::pair<int, int> Genotype_subject_flags::find_genotype_idx_range(const std::string& line)const {
-    return find_idx_range(line, genotype_idx, delimiter);
+std::pair<int, int> Genotype_subject_line_parser::find_genotype_idx_range(const Genotype_subject_flags& genotype_subject_flags, const std::string& line){
+    return find_idx_range(line, genotype_subject_flags.genotype_idx, genotype_subject_flags.delimiter);
 }
-std::pair<int, int> Genotype_subject_flags::find_UID_idx_range(const std::string& line)const {
-    return find_idx_range(line, UID_idx, delimiter);
+std::pair<int, int> Genotype_subject_line_parser::find_UID_idx_range(const Genotype_subject_flags& genotype_subject_flags, const std::string& line){
+    return find_idx_range(line, genotype_subject_flags.UID_idx, genotype_subject_flags.delimiter);
 }
-std::pair<std::string, std::string> Genotype_subject_flags::parse_line(const std::string& line)const {
-    const auto genotype_range = find_genotype_idx_range(line);
-    const auto uid_range = find_UID_idx_range(line);
+std::pair<std::string, std::string> Genotype_subject_line_parser::parse_line(const Genotype_subject_flags& genotype_subject_flags, const std::string& line){
+    const auto genotype_range = find_genotype_idx_range(genotype_subject_flags,line);
+    const auto uid_range = find_UID_idx_range(genotype_subject_flags,line);
     std::string uid_str;
     std::string genotype_str;
     if (uid_range.first < line.size() && uid_range.second > 0) {

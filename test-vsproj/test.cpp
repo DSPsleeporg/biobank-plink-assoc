@@ -124,7 +124,7 @@ TEST(Genotype_subject_parse, Genotype_line_parse) {
     gs_flag.delimiter = '\t';
     gs_flag.UID_idx = 1;
     gs_flag.genotype_idx = 2;
-    const auto parse_result = gs_flag.parse_line(genotype_line);
+    const auto parse_result = Genotype_subject_line_parser::parse_line(gs_flag,genotype_line);
     EXPECT_EQ(uid_str, parse_result.first);
     EXPECT_EQ(genotype_str,parse_result.second);
 }
