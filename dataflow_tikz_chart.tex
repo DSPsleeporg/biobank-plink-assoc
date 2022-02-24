@@ -24,7 +24,7 @@
 \node[block,fill=red!20,below of = DA_G_raw](DA_P){Sleep pattern clustering results};
 \node (aux_DA_down) at($(DA_G_raw)!0.7!(DA_P)$) {};
 \node[block,right of = DA_G_map,fill=blue!20](DP_G_mformat){Genotype map ASCII file parse};
-\node[block,right of = aux_DA_up,fill=blue!20](DP_G_format){Genotype ASCII file conversion};
+\node[block,right of = aux_DA_up,fill=blue!20](DP_G_format){Combined Geno/phenotype file conversion};
 \node[block,right of = aux_DA_down,fill=green!20](DP_P_format){Phenotype ASCII file parse};
 \node[block, right of = DP_P_format,fill=red!20](DP_partition_input){Binary partition of clusters.};
 \path(DA_G_map)edge[line] node (DA_G_mp){}(DP_G_mformat);
@@ -38,11 +38,11 @@
 \path(DP_P_format)edge[line,color=blue]node[text width = 6em](DP_P2G){binary/scalar phenotype map}(DP_G_format);
 \path(DP_partition_input)edge[line,color=blue,dashed]node(DP_partition_to_parse){discrete}(DP_P_format);
 \node[block,fill=green!20,right of = DP_C] (AS) {Find potential genes using \texttt{plink --assoc}};
-\path(DP_C)edge[line](AS);
+\path(DP_C)edge[line]node(DP_C_2_AS){proxy \texttt{bed}}(AS);
 \node[block,fill=blue!20, right of = DP_G_format, node distance = 42.5em] (PP_G) {Parse the result by lookup the original allele.};
-\path(AS)edge[line](PP_G);
+\path(AS)edge[line]node(AS_2_PP_G){SNP list}(PP_G);
 \path(DP_G_mformat)edge[line]node(DP_G_LUT_PP){allele lookup table} (PP_G);
-\path(DP_G_mformat)edge[line,color=blue]node(DP_G_m2r){genotype map}(DP_G_format);
+\path(DP_G_mformat)edge[line,color=blue]node(DP_G_m2r){proxy genotype map}(DP_G_format);
 %Titles: 
 \node[above of = DA_G_raw,node distance = 18em](DA_t){\large \textbf{Data acquisition}};
 \node[above of = aux_DPC,node distance = 18em](DA_t){\large \textbf{Data processing}};
