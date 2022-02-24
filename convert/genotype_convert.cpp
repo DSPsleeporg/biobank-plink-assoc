@@ -19,14 +19,14 @@ std::pair<std::string, std::string> Genotype_subject_line_parser::parse_line(con
     }
     return std::make_pair(uid_str, genotype_str);
 }
-std::pair<int, int> Genotype_line_parser::find_SNP_idx_range(const Genotype_proxy_flags& genotype_map_flags, const std::string& line){
-    return find_idx_range(line, genotype_map_flags.SNP_idx, genotype_map_flags.delimiter);
+std::pair<int, int> Genotype_line_parser::find_SNP_idx_range(const Genotype_proxy_flags& genotype_proxy_flags, const std::string& line){
+    return find_idx_range(line, genotype_proxy_flags.SNP_idx, genotype_proxy_flags.delimiter);
 }
-std::pair<int, int> Genotype_line_parser::find_base_idx_range(const Genotype_proxy_flags& genotype_map_flags, const std::string& line, const int base_choice_idx){
-    return find_idx_range(line, genotype_map_flags.base_start_idx + base_choice_idx - 1, genotype_map_flags.delimiter);
+std::pair<int, int> Genotype_line_parser::find_base_idx_range(const Genotype_proxy_flags& genotype_proxy_flags, const std::string& line, const int base_choice_idx){
+    return find_idx_range(line, genotype_proxy_flags.base_start_idx + base_choice_idx - 1, genotype_proxy_flags.delimiter);
 }
-std::pair<std::string, std::vector<std::string>> Genotype_line_parser::parse_line_for_original(const Genotype_proxy_flags& genotype_map_flags, const std::string& line){
-    const auto snp_range = find_SNP_idx_range(genotype_map_flags,line);
+std::pair<std::string, std::vector<std::string>> Genotype_line_parser::parse_line_for_original(const Genotype_proxy_flags& genotype_proxy_flags, const std::string& line){
+    const auto snp_range = find_SNP_idx_range(genotype_proxy_flags,line);
     std::string snp_str;
     if(snp_range.first < line.size() && snp_range.second > 0) {
         snp_str = line.substr(snp_range.first, snp_range.second);
@@ -34,7 +34,7 @@ std::pair<std::string, std::vector<std::string>> Genotype_line_parser::parse_lin
     std::vector<std::string> rval_second;
     for (int base_choice_idx = 1; base_choice_idx <= 4; base_choice_idx++) {
         std::string base_str;
-        const auto base_range = find_base_idx_range(genotype_map_flags,line, base_choice_idx);
+        const auto base_range = find_base_idx_range(genotype_proxy_flags,line, base_choice_idx);
         //Removes the potential double quotation ":
         int head_adjust = line[base_range.first] == '"' ? 1 : 0;
         int length_adjust = (line[base_range.first + base_range.second - 1] == '"' ? -1 : 0) - head_adjust;
@@ -58,8 +58,8 @@ std::pair<std::string, std::string> parse_base(const std::string& pair_str) {
     const auto second_range = Line_parser::find_idx_range(pair_str, 2, ' ');
     return std::make_pair(pair_str.substr(first_range.first, first_range.second), pair_str.substr(second_range.first, second_range.second));
 }
-std::pair<std::string, std::vector<std::string>> Genotype_line_parser::parse_line_for_proxy(const Genotype_proxy_flags& genotype_map_flags, const std::string& line){
-    const auto original_pair = parse_line_for_original(genotype_map_flags,line);
+std::pair<std::string, std::vector<std::string>> Genotype_line_parser::parse_line_for_proxy(const Genotype_proxy_flags& genotype_proxy_flags, const std::string& line){
+    const auto original_pair = parse_line_for_original(genotype_proxy_flags,line);
     const auto& pair_vec = original_pair.second;
     std::unordered_map<std::string, char> origin_proxy_map;
     //Map is distinct for each line, ordered by their apperance in the line.
