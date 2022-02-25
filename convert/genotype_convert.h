@@ -72,18 +72,20 @@ public:
 class Genotype_file_converter {
     //Converts raw genotype file to proxy ped file used by plink --make bed.
     //Workflow:
-    //1. Constructs converter with Genotype_proxy_map and optional phenotype_map
-    //2. Converts 
-    const bool has_phenotype;
-    const Genotype_proxy_map& genotype_proxy_map;//Stored as reference. 
-    const Phenotype_map& phenotype_map;//Stored as reference.
+    // 1. Constructs converter with Genotype_proxy_map and optional phenotype_map
+    // 2. Checks if Genotype_file_converter is valid
+    // 3-n. Converts raw genotype streams/files to proxy ped stream/files.
+    Genotype_proxy_map* _gpm_ptr;//Stored as pointer. (To make the context  
+    Phenotype_map* _pm_ptr;//Stored as reference.
+    void constructor_postprocess();//Finishes setup after constructor is called
 public:
     //Constructor: genotype and phenotype
-    Genotype_file_converter(Genotype_proxy_map& genotype_proxy_map_ref, Phenotype_map& phenotype_map_ref):
-        genotype_proxy_map(genotype_proxy_map_ref),phenotype_map(phenotype_map_ref),has_phenotype(true)
-    {
-    
-    }
-    //Constructor: genotype only
-    bool load_genotype(const Genotype_proxy_map& genotype_proxy_map);
+    Genotype_file_converter(Genotype_proxy_map* genotype_proxy_map_ptr, Phenotype_map* phenotype_map_ptr = nullptr);
+    bool is_valid()const;
+    //convert functions: returns true if convertion is sucessful.
+    //When false is returned, no gurantee that output is not modified. 
+    bool convert(std::istream& is, std::ostream& os, const Genotype_subject_flags& genotype_subject_flags)const;
+    bool convert(const std::string& input_filename, std::ostream& os, const Genotype_subject_flags& genotype_subject_flags)const;
+    bool convert(std::istream& is, const std::string& output_filename, const Genotype_subject_flags& genotype_subject_flags)const;
+    bool convert(const std::string& input_filename, const std::string& output_filename, const Genotype_subject_flags& genotype_subject_flags)const;
 };
