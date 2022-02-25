@@ -103,14 +103,14 @@ std::pair<std::string, std::vector<std::string>> Genotype_line_parser::parse_lin
     }
     return std::make_pair(original_pair.first, proxy_pair_vec);
 }
-bool Genotype_proxy_map::read_map(const Genotype_proxy_flags& genotype_proxy_flags) {
+bool Genotype_proxy_map::read_map(const std::string& map_filename, const Genotype_proxy_flags& genotype_proxy_flags) {
     //read_map can only be called for an empty Genotype_proxy_map:
     if (status() != Genotype_proxy_status::empty) {
         return false;
     }
     //Open file for read: 
     std::fstream gt_fs;//genotype filestream
-    gt_fs.open(genotype_proxy_flags.map_filename,std::ios::in);
+    gt_fs.open(map_filename,std::ios::in);
     if (!gt_fs.is_open()) {
         return false;
     }

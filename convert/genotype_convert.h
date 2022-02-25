@@ -10,7 +10,6 @@
 #include "phenotype_convert.h"
 enum class Genotype_proxy_status{empty,ready,spoiled};
 struct Genotype_subject_flags{
-    std::string filename;
     int UID_idx;
     int genotype_idx;
     char delimiter;
@@ -29,7 +28,6 @@ struct Genotype_proxy_flags{
     //Expected genotype map line: 
     //... uid_field ... 4 consecutive base_pair_field(e.g. "CCTGG CCT""C CCTGG" "0 0" "") ...
     //Expect genotype_map is ordered the same as the genotype sequence, no attempt is made to match index. 
-    std::string map_filename;
     int SNP_idx;
     int base_start_idx;
     char delimiter;
@@ -63,11 +61,29 @@ public:
     //Creates proxy map by reading file:
     // Does not allow reading of multiple files, as the genotype map and raw genotype
     // is only aligned by their index. 
-    bool read_map(const Genotype_proxy_flags& genotype_proxy_flags);
+    bool read_map(const std::string& map_filename, const Genotype_proxy_flags& genotype_proxy_flags);
     //Number of genotype fields: 
     int size()const;
     //Find SNP at index: NOTE: allele_pos_idx is 0-based, convention used by UK Biobank!
     std::pair<bool,std::string> get_SNP_name(const int allele_pos_idx)const;
     //Find proxy allele at index: NOTE: allele_type_idx is 0-based, convention used by UK Biobank!
     std::pair<bool, std::string> get_proxy_allele(const int allele_pos_idx, const int allele_type_idx)const;
+};
+class Genotype_file_converter {
+    //Converts raw genotype file to proxy ped file used by plink --make bed.
+    //Workflow:
+    //1. Constructs converter with Genotype_proxy_map and optional phenotype_map
+    //2. Converts 
+    const bool has_phenotype;
+    const Genotype_proxy_map& genotype_proxy_map;//Stored as reference. 
+    const Phenotype_map& phenotype_map;//Stored as reference.
+public:
+    //Constructor: genotype and phenotype
+    Genotype_file_converter(Genotype_proxy_map& genotype_proxy_map_ref, Phenotype_map& phenotype_map_ref):
+        genotype_proxy_map(genotype_proxy_map_ref),phenotype_map(phenotype_map_ref),has_phenotype(true)
+    {
+    
+    }
+    //Constructor: genotype only
+    bool load_genotype(const Genotype_proxy_map& genotype_proxy_map);
 };

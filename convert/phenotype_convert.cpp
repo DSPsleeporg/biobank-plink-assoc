@@ -46,7 +46,7 @@ std::pair<std::string,std::string> Phenotype_line_parser::parse_line(const Pheno
     }
     return std::make_pair(uid_str,phenotype_str);
 }
-bool Scalar_phenotype_map::read_phenotype(const Phenotype_flags& phenotype_flags){
+bool Scalar_phenotype_map::read_phenotype(const std::string& filename, const Phenotype_flags& phenotype_flags){
     //Check that this map is in an state that allows read: For the scalar case, it is always possible, 
     // unless the file or the map is already corrupted. 
     if (_phenotype_status == Phenotype_status::spoiled){
@@ -54,7 +54,7 @@ bool Scalar_phenotype_map::read_phenotype(const Phenotype_flags& phenotype_flags
     }
     //Open file for read: 
     std::fstream pt_fs;//phenotype filestream
-    pt_fs.open(phenotype_flags.filename,std::ios::in);
+    pt_fs.open(filename,std::ios::in);
     if (!pt_fs.is_open()){
         return false;
     }
@@ -121,14 +121,14 @@ std::pair<bool,int> Scalar_phenotype_map::find_discrete_state(const std::string&
     //Finding discrete state is not possible. 
     return std::make_pair(false,0);
 }
-bool Discrete_phenotype_map::read_phenotype(const Phenotype_flags& phenotype_flags){
+bool Discrete_phenotype_map::read_phenotype(const std::string& filename, const Phenotype_flags& phenotype_flags){
     //Check that this map is in an state that allows read: For discrete case, only empty and bisect_wait permits new input.
     if (_phenotype_status != Phenotype_status::bisect_wait && _phenotype_status != Phenotype_status::empty){
         return false;
     }
     //Open file for read: 
     std::fstream pt_fs;//phenotype filestream
-    pt_fs.open(phenotype_flags.filename,std::ios::in);
+    pt_fs.open(filename,std::ios::in);
     if (!pt_fs.is_open()){
         return false;
     }

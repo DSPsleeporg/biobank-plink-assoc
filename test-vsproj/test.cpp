@@ -41,14 +41,14 @@ TEST(Phenotype_parse, Scalar_line_parse) {
 }
 TEST(Phenotype_parse, Discrete_file_parse) {
     Phenotype_flags sample_flags;
-    sample_flags.filename = "sample_phenotype.csv";
+    const std::string filename = "sample_phenotype.csv";
     sample_flags.delimiter = ',';
     sample_flags.is_discrete = true;
     sample_flags.UID_idx = 1;
     sample_flags.phenotype_idx = 28;
     sample_flags.skip_first_row = true;
     Discrete_phenotype_map discrete_phenotype_map;
-    discrete_phenotype_map.read_phenotype(sample_flags);
+    discrete_phenotype_map.read_phenotype(filename,sample_flags);
     EXPECT_EQ(discrete_phenotype_map.size(), 100);
     EXPECT_EQ(discrete_phenotype_map.status(), Phenotype_status::bisect_wait);
     std::unordered_set<std::string> raw_phenotype_set = discrete_phenotype_map.get_raw_phenotype();
@@ -68,14 +68,14 @@ TEST(Phenotype_parse, Discrete_file_parse) {
 }
 TEST(Phenotype_parse, Discrete_phenotype_map_parse) {
     Phenotype_flags sample_flags;
-    sample_flags.filename = "sample_phenotype.csv";
+    const std::string filename = "sample_phenotype.csv";
     sample_flags.delimiter = ',';
     sample_flags.is_discrete = true;
     sample_flags.UID_idx = 1;
     sample_flags.phenotype_idx = 28;
     sample_flags.skip_first_row = true;
     Discrete_phenotype_map discrete_phenotype_map;
-    discrete_phenotype_map.read_phenotype(sample_flags);
+    discrete_phenotype_map.read_phenotype(filename,sample_flags);
     std::unordered_set<std::string> positive_phenotype_set;
     positive_phenotype_set.insert("1");
     positive_phenotype_set.insert("4b");
@@ -100,14 +100,14 @@ TEST(Phenotype_parse, Discrete_phenotype_map_parse) {
 }
 TEST(Phenotype_parse, Scalar_file_parse) {
     Phenotype_flags sample_flags;
-    sample_flags.filename = "sample_phenotype.csv";
+    const std::string filename = "sample_phenotype.csv";
     sample_flags.delimiter = ',';
     sample_flags.is_discrete = true;
     sample_flags.UID_idx = 1;
     sample_flags.phenotype_idx = 4;
     sample_flags.skip_first_row = true;
     Scalar_phenotype_map scalar_phenotype_map;
-    scalar_phenotype_map.read_phenotype(sample_flags);
+    scalar_phenotype_map.read_phenotype(filename, sample_flags);
     EXPECT_EQ(scalar_phenotype_map.size(), 100);
     EXPECT_EQ(scalar_phenotype_map.status(), Phenotype_status::ready);
     EXPECT_NEAR(34.54154, scalar_phenotype_map.find_scalar_state("1005905_90001_0_0_judging.csv").second, 1e-5);
@@ -187,13 +187,13 @@ TEST(Genotype_proxy_parse, Genotype_proxy_line_parse) {
 TEST(Genotype_proxy_parse, Genotype_proxy_file_parse) {
     Genotype_proxy_flags gp_flag;
 
-    gp_flag.map_filename = "dic_head.dat";
+    const std::string map_filename = "dic_head.dat";
     gp_flag.skip_first_row = false;
     gp_flag.delimiter = '\t';
     gp_flag.SNP_idx = 1;
     gp_flag.base_start_idx = 4;
     Genotype_proxy_map genotype_proxy_map;
-    EXPECT_TRUE(genotype_proxy_map.read_map(gp_flag));
+    EXPECT_TRUE(genotype_proxy_map.read_map(map_filename,gp_flag));
     EXPECT_EQ(genotype_proxy_map.size(), 500);
     //Check some proxy base pairs: 
     EXPECT_EQ(genotype_proxy_map.get_SNP_name(499).second, "2836653");

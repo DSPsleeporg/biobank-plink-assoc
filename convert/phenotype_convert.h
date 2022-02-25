@@ -25,7 +25,6 @@ public:
     static std::pair<int, int> find_idx_range(const std::string& line, const int field_idx, const char delimiter);
 };
 struct Phenotype_flags {
-    std::string filename;
     char delimiter;
     int UID_idx;//1-based, consistent with convention used by plink
     int phenotype_idx;//1-based, consistent with convention used by plink
@@ -45,7 +44,7 @@ class Phenotype_map{
 public:
     //reads phenotype file. Return true if read is successful.
     //Allows multiple input files, but would refuse to read once map of raw_phenotype to binary phenotype is established.
-    virtual bool read_phenotype(const Phenotype_flags& phenotype_flags) = 0;
+    virtual bool read_phenotype(const std::string& filename, const Phenotype_flags& phenotype_flags) = 0;
     //Return status of the Phenotype_map:
     virtual Phenotype_status status()const = 0;
     //Number of subjects:
@@ -68,7 +67,7 @@ public:
     //Constructor: creates empty map
     Scalar_phenotype_map():_phenotype_status(Phenotype_status::empty){}
     //Inherited methods: 
-    bool read_phenotype(const Phenotype_flags& phenotype_flags);
+    bool read_phenotype(const std::string& filename, const Phenotype_flags& phenotype_flags);
     //Return status of the Phenotype_map:
     Phenotype_status status()const;
     int size()const;
@@ -90,7 +89,7 @@ public:
     //Constructor: creates empty map
     Discrete_phenotype_map():_phenotype_status(Phenotype_status::empty){}
     //Inherited methods: 
-    bool read_phenotype(const Phenotype_flags& phenotype_flags);
+    bool read_phenotype(const std::string& filename, const Phenotype_flags& phenotype_flags);
     //Return status of the Phenotype_map:
     Phenotype_status status()const;
     int size()const;
