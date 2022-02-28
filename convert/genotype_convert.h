@@ -68,6 +68,7 @@ public:
     std::pair<bool,std::string> get_SNP_name(const int allele_pos_idx)const;
     //Find proxy allele at index: NOTE: allele_type_idx is 0-based, convention used by UK Biobank!
     std::pair<bool, std::string> get_proxy_allele(const int allele_pos_idx, const int allele_type_idx)const;
+    std::pair<bool, std::string> get_proxy_allele_line(const std::string& raw_genotype_str)const;
 };
 class Genotype_file_converter {
     //Converts raw genotype file to proxy ped file used by plink --make bed.
@@ -75,15 +76,18 @@ class Genotype_file_converter {
     // 1. Constructs converter with Genotype_proxy_map and optional phenotype_map
     // 2. Checks if Genotype_file_converter is valid
     // 3-n. Converts raw genotype streams/files to proxy ped stream/files.
-    Genotype_proxy_map* _gpm_ptr;//Stored as pointer. (To make the context  
-    Phenotype_map* _pm_ptr;//Stored as reference.
-    void constructor_postprocess();//Finishes setup after constructor is called
+    const Genotype_proxy_map* _gpm_ptr;//Stored as pointer.
+    const Phenotype_map* _pm_ptr;//Stored as pointer as pm is optional. 
 public:
     //Constructor: genotype and phenotype
-    Genotype_file_converter(Genotype_proxy_map* genotype_proxy_map_ptr, Phenotype_map* phenotype_map_ptr = nullptr);
+    Genotype_file_converter(const Genotype_proxy_map* genotype_proxy_map_ptr, const Phenotype_map* phenotype_map_ptr = nullptr);
     bool is_valid()const;
     //convert functions: returns true if convertion is sucessful.
     //When false is returned, no gurantee that output is not modified. 
+    //Operate on input/output by lines, only loads single line into memory. 
+    //Convert output lines formatted as follows: 
+    //UID (Phenotype?) Proxy_allele
+    //Output matches plink flags --no-fid --no-parents --no-sex (!--no-pheno?)
     bool convert(std::istream& is, std::ostream& os, const Genotype_subject_flags& genotype_subject_flags)const;
     bool convert(const std::string& input_filename, std::ostream& os, const Genotype_subject_flags& genotype_subject_flags)const;
     bool convert(std::istream& is, const std::string& output_filename, const Genotype_subject_flags& genotype_subject_flags)const;

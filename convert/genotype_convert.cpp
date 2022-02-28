@@ -152,3 +152,133 @@ std::pair<bool,std::string> Genotype_proxy_map::get_proxy_allele(const int allel
     }
     return std::make_pair(true, proxy_allele_matrix[allele_pos_idx][allele_type_idx]);
 }
+std::pair<bool, std::string> Genotype_proxy_map::get_proxy_allele_line(const std::string& raw_genotype_str)const {
+    if (status() != Genotype_proxy_status::ready) {
+        return std::make_pair(false, "");
+    }
+    if (raw_genotype_str.size() != size()) {
+        return std::make_pair(false, "");
+    }
+    if (raw_genotype_str.size() == 0) {
+        return std::make_pair(true, "");
+    }
+    std::string proxy_genotype_str;
+    proxy_genotype_str.reserve(size() * 4);
+    int allele_pos_idx = 0;
+    for (const char ch : raw_genotype_str){
+        const auto proxy_allele_pair = get_proxy_allele(allele_pos_idx++, ch - '0');
+        if (proxy_allele_pair.first) {
+            proxy_genotype_str.append(proxy_allele_pair.second);
+            proxy_genotype_str.append(1, ' ');
+        }
+        else {
+            return std::make_pair(false, "");//allele_type_idx out of bound.
+        }
+    }
+    proxy_genotype_str.pop_back();//Removes extra space. 
+    return std::make_pair(true, proxy_genotype_str);
+}
+Genotype_file_converter::Genotype_file_converter(const Genotype_proxy_map* genotype_proxy_map_ptr, const Phenotype_map* phenotype_map_ptr):
+_gpm_ptr(genotype_proxy_map_ptr),_pm_ptr(phenotype_map_ptr){}
+bool Genotype_file_converter::is_valid() const{
+    //Checks basic validity:
+    //genotype proxy map: (Required)
+    if (_gpm_ptr == nullptr || _gpm_ptr->status() != Genotype_proxy_status::ready) {
+        return false;
+    }
+    //phenotype map: (Optional)
+    if (_pm_ptr && _pm_ptr->status() != Phenotype_status::ready) {
+        return false;
+    }
+    //Further check requring information about  are not possible.
+}
+enum class Phenotype_map_type {unknown,omitted,discrete,scalar};
+Phenotype_map_type find_phenotype_map_state(const std::string& UID, const Phenotype_map* _pm_ptr) {
+    Phenotype_map_type pm_t = Phenotype_map_type::unknown;
+    if (_pm_ptr == nullptr) {
+        pm_t = Phenotype_map_type::omitted;
+    }
+    else if (_pm_ptr->find_discrete_state(UID).first) {
+        pm_t = Phenotype_map_type::discrete;
+    }
+    else if (_pm_ptr->find_scalar_state(UID).first) {
+        pm_t = Phenotype_map_type::scalar;
+    }
+    return pm_t;
+}
+bool Genotype_file_converter::convert(std::istream& is, std::ostream& os, const Genotype_subject_flags& genotype_subject_flags)const {
+    //Check validity of file converter:
+    if (is_valid() == false) {
+        return false;
+    }
+    //Read lines:
+    std::string cur_line;
+    if (genotype_subject_flags.skip_first_row) {
+        std::getline(is, cur_line);
+    }
+    Phenotype_map_type pm_t = Phenotype_map_type::unknown;
+    while (!is.eof()) {
+        std::getline(is, cur_line);
+        const auto parse_result = Genotype_subject_line_parser::parse_line(genotype_subject_flags, cur_line);
+        //As an empty line commonly follows a text file, we disregard this line when both UID and genotype
+        // were not found. 
+        if (parse_result.first == "" && parse_result.second == "") {
+            continue;
+        }
+        //Check length of parsed raw genotype matching phenotype: 
+        //Recall: first: subject UID. second: raw genotype. 
+        if (parse_result.second.size() != _gpm_ptr->size()) {
+            return false;
+        }
+        //Check subject UID exists if phenotype exists. 
+        if (pm_t == Phenotype_map_type::unknown) {
+            //Should only run once during convert. 
+            pm_t = find_phenotype_map_state(parse_result.first, _pm_ptr);
+        }
+        //Prints UID: 
+        os << parse_result.first << ' ';//Per plink document, space-delimited. 
+        //Prints Phenotype:
+        switch (pm_t)
+        {
+        case Phenotype_map_type::unknown:
+            //Phenotype map provided, but UID not found. Convertion result is invalid. 
+            return false;
+            break;
+        case Phenotype_map_type::omitted:
+            //Optional phenotype not provided to file_converter.
+            break;
+        case Phenotype_map_type::discrete:{
+            const auto discrete_phenotype_enquiry_result = _pm_ptr->find_discrete_state(parse_result.first);
+            if (discrete_phenotype_enquiry_result.first) {
+                os << discrete_phenotype_enquiry_result.second << ' ';
+            }
+            else {
+                //Phenotype does not exist in map.
+                return false;
+            }
+            break;
+        }
+        case Phenotype_map_type::scalar: {
+            const auto scalar_phenotype_enquiry_result = _pm_ptr->find_scalar_state(parse_result.first);
+            if (scalar_phenotype_enquiry_result.first) {
+                os << scalar_phenotype_enquiry_result.second << ' ';
+            }
+            else {
+                //Phenotype does not exist in map.
+                return false;
+            }
+            break;
+        }
+
+        }
+        //Prints proxy allele:
+        const auto genotype_enquiry_result = _gpm_ptr->get_proxy_allele_line(parse_result.second);
+        if (genotype_enquiry_result.first) {
+            os << genotype_enquiry_result.second << std::endl;
+        }
+        else {
+            return false;
+        }
+    }
+    return true;
+}

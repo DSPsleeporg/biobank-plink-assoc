@@ -182,7 +182,7 @@ TEST(Genotype_proxy_parse, Genotype_proxy_line_parse) {
     EXPECT_EQ("1 2", proxy_parse_result.second[0]);
     EXPECT_EQ("0 0", proxy_parse_result.second[1]);
     EXPECT_EQ("1 1", proxy_parse_result.second[2]);
-    EXPECT_EQ("E E", proxy_parse_result.second[3]);
+    EXPECT_EQ("E E", proxy_parse_result.second[3]); 
 }
 TEST(Genotype_proxy_parse, Genotype_proxy_file_parse) {
     Genotype_proxy_flags gp_flag;
@@ -214,4 +214,70 @@ TEST(Genotype_proxy_parse, Genotype_proxy_file_parse) {
     EXPECT_EQ(genotype_proxy_map.get_proxy_allele(317, 1).second, "1 2");//GA
     EXPECT_EQ(genotype_proxy_map.get_proxy_allele(317, 2).second, "1 1");//G G
     EXPECT_EQ(genotype_proxy_map.get_proxy_allele(317, 3).first, false);//_, CANNOT be read as this index should not exist.
+}
+TEST(Genotype_proxy_parse, Genotype_proxy_raw_genotype_convert) {
+    Genotype_proxy_flags gp_flag;
+
+    const std::string map_filename = "short_dic_head.dat";
+    //has 13 SNPs, (1-based) position 8,9,12,13 have only 3 alleles.
+    gp_flag.skip_first_row = false;
+    gp_flag.delimiter = '\t';
+    gp_flag.SNP_idx = 1;
+    gp_flag.base_start_idx = 4;
+    Genotype_proxy_map genotype_proxy_map;
+    EXPECT_TRUE(genotype_proxy_map.read_map(map_filename, gp_flag));
+    EXPECT_EQ(genotype_proxy_map.size(), 13);
+    std::string short_raw = "012012012012";//length 12
+    std::string long_raw = "01201201201201";//length 14
+    std::string ob_raw = "0120120120123";//index 13 over bound
+    EXPECT_FALSE(genotype_proxy_map.get_proxy_allele_line(short_raw).first);
+    EXPECT_FALSE(genotype_proxy_map.get_proxy_allele_line(long_raw).first);
+    EXPECT_FALSE(genotype_proxy_map.get_proxy_allele_line(ob_raw).first);
+    std::string valid_raw = "0120120120120";
+    std::string valid_proxy = "1 1 2 1 1 1 1 1 2 1 1 1 1 1 0 0 0 0 1 2 2 2 2 1 1 1";
+    EXPECT_EQ(genotype_proxy_map.get_proxy_allele_line(valid_raw).second, valid_proxy);
+}
+TEST(Genotype_file_converter, Genotype_stream_converter_test) {
+    //Set phenotype map: 
+    Phenotype_flags p_flag;
+    const std::string filename = "sample_phenotype.csv";
+    p_flag.delimiter = ',';
+    p_flag.is_discrete = true;
+    p_flag.UID_idx = 1;
+    p_flag.phenotype_idx = 28;
+    p_flag.skip_first_row = true;
+    Discrete_phenotype_map discrete_phenotype_map;
+    discrete_phenotype_map.read_phenotype(filename, p_flag);
+    std::unordered_set<std::string> positive_phenotype_set;
+    positive_phenotype_set.insert("1");
+    positive_phenotype_set.insert("4b");
+    auto phenotype_status = discrete_phenotype_map.set_phenotype_map(positive_phenotype_set);
+    EXPECT_EQ(phenotype_status, Phenotype_status::ready);
+    //Set genotype proxy map:
+    Genotype_proxy_flags gp_flag;
+    const std::string map_filename = "short_dic_head.dat";
+    //has 13 SNPs, (1-based) position 8,9,12,13 have only 3 alleles.
+    gp_flag.skip_first_row = false;
+    gp_flag.delimiter = '\t';
+    gp_flag.SNP_idx = 1;
+    gp_flag.base_start_idx = 4;
+    Genotype_proxy_map genotype_proxy_map;
+    EXPECT_TRUE(genotype_proxy_map.read_map(map_filename, gp_flag));
+    EXPECT_EQ(genotype_proxy_map.size(), 13);
+    //Set genotype subject flags. 
+    Genotype_subject_flags gs_flag;
+    gs_flag.skip_first_row = false;
+    gs_flag.delimiter = '\t';
+    gs_flag.UID_idx = 1;
+    gs_flag.genotype_idx = 2;
+    std::string genotype_line = "1000500_90001_0_0_judging.csv\t0120120120120";
+    
+    std::istringstream is(genotype_line);
+    std::ostringstream os;
+    //Check case without phenotype: 
+    Genotype_file_converter sp_gfc(&genotype_proxy_map);//sans phenotype genotype file converter:
+    std::string ref_parse_result_no_phenotype = std::string("1000500_90001_0_0_judging.csv ") + "1 1 2 1 1 1 1 1 2 1 1 1 1 1 0 0 0 0 1 2 2 2 2 1 1 1\n";
+    EXPECT_TRUE(sp_gfc.is_valid());
+    EXPECT_TRUE(sp_gfc.convert(is, os, gs_flag));
+    EXPECT_EQ(os.str(), ref_parse_result_no_phenotype);
 }
