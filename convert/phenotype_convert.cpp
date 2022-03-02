@@ -174,7 +174,7 @@ std::ostream& Discrete_phenotype_map::print(std::ostream& os)const{
     }
     //Iterate through all individuals, output into stream: 
     for (auto uid_raw_pair : uid_raw_map){
-        os << uid_raw_pair.first << " " << uid_raw_pair.first << " " << raw_bisect_map.at(uid_raw_pair.second) << std::endl;
+        os << uid_raw_pair.first << " " << uid_raw_pair.first << " " << raw_bisect_map.at(uid_raw_pair.second) << '\n';
     }
     return os;
 }

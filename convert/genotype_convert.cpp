@@ -287,7 +287,7 @@ bool Genotype_file_converter::convert(std::istream& is, std::ostream& os, const 
         //Prints proxy allele:
         const auto genotype_enquiry_result = _gpm_ptr->get_proxy_allele_line(parse_result.second);
         if (genotype_enquiry_result.first) {
-            os << genotype_enquiry_result.second << std::endl;
+            os << genotype_enquiry_result.second << '\n';
         }
         else {
             return false;

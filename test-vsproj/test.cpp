@@ -286,12 +286,15 @@ TEST(Genotype_file_converter, Genotype_stream_converter_test) {
     EXPECT_TRUE(sp_gfc.convert(is, os, gs_flag));
     EXPECT_EQ(os.str(), ref_parse_result_no_phenotype);
 }
-int biased_phenotype(const int allele_type_idx, std::mt19937& gen) {
-    //Returns 0 and 1, randomly, distribution is dependent on allele_type_idx. 
-    std::discrete_distribution<> d0({ 1, 1});
+namespace biased_dist {
+    std::discrete_distribution<> d0({ 1, 1 });
     std::discrete_distribution<> d1({ 3, 1 });
     std::discrete_distribution<> d2({ 1, 3 });
     std::discrete_distribution<> d3({ 3, 2 });
+}
+int biased_phenotype(const int allele_type_idx, std::mt19937& gen) {
+    //Returns 0 and 1, randomly, distribution is dependent on allele_type_idx. 
+    using namespace biased_dist;
     switch (allele_type_idx%4)
     {
     case 0:
@@ -327,11 +330,10 @@ bool generate_genotype_phenotype_subject(const Genotype_proxy_map& genotype_prox
             const int rnd_val = ui_dist(gen);
             gt_fs << rnd_val;
             if (j == bias_index) {
-                pt_fs << biased_phenotype(rnd_val, gen) << std::endl;
+                pt_fs << biased_phenotype(rnd_val, gen) << '\n';
             }
         }
-        gt_fs << std::endl;
-        gt_fs.flush();
+        gt_fs << '\n';
     }
     pt_fs.close();
     gt_fs.close();
@@ -374,6 +376,50 @@ TEST(Genotype_file_converter, Genotype_file_converter_test) {
     EXPECT_EQ(phenotype_status, Phenotype_status::ready);
     std::ifstream gt_fs;
     gt_fs.open(g_filename,std::ios_base::in);
+    EXPECT_TRUE(gt_fs.is_open());
+    std::ostringstream os;
+    //Check case without phenotype: 
+    Genotype_file_converter sp_gfc(&genotype_proxy_map);//sans phenotype genotype file converter:
+    //std::string ref_parse_result_no_phenotype = std::string("1000500_90001_0_0_judging.csv ") + "1 1 2 1 1 1 1 1 2 1 1 1 1 1 0 0 0 0 1 2 2 2 2 1 1 1\n";
+    EXPECT_TRUE(sp_gfc.is_valid());
+    EXPECT_TRUE(sp_gfc.convert(gt_fs, os, gs_flag));
+}
+TEST(Genotype_file_converter, Genotype_large_file_converter_test) {
+    //Set genotype proxy map:
+    Genotype_proxy_flags gp_flag;
+    const std::string map_filename = "gene_dic.dat";
+    gp_flag.skip_first_row = false;
+    gp_flag.delimiter = '\t';
+    gp_flag.SNP_idx = 1;
+    gp_flag.base_start_idx = 4;
+    Genotype_proxy_map genotype_proxy_map;
+    EXPECT_TRUE(genotype_proxy_map.read_map(map_filename, gp_flag));
+    EXPECT_EQ(genotype_proxy_map.size(), 805426);
+    //Set genotype subject flags. 
+    Genotype_subject_flags gs_flag;
+    gs_flag.skip_first_row = false;
+    gs_flag.delimiter = '\t';
+    gs_flag.UID_idx = 1;
+    gs_flag.genotype_idx = 2;
+    const std::string g_filename = "rnd_genotype.csv";
+    //Generate genotype subject and phenotype map from data: 
+    const std::string p_filename = "rnd_phenotype.csv";
+    EXPECT_TRUE(generate_genotype_phenotype_subject(genotype_proxy_map, 1000, g_filename, 18, p_filename));
+    //Set phenotype map: 
+    Phenotype_flags p_flag;
+    p_flag.delimiter = ',';
+    p_flag.is_discrete = true;
+    p_flag.UID_idx = 1;
+    p_flag.phenotype_idx = 2;
+    p_flag.skip_first_row = false;
+    Discrete_phenotype_map discrete_phenotype_map;
+    discrete_phenotype_map.read_phenotype(p_filename, p_flag);
+    std::unordered_set<std::string> positive_phenotype_set;
+    positive_phenotype_set.insert("1");
+    auto phenotype_status = discrete_phenotype_map.set_phenotype_map(positive_phenotype_set);
+    EXPECT_EQ(phenotype_status, Phenotype_status::ready);
+    std::ifstream gt_fs;
+    gt_fs.open(g_filename, std::ios_base::in);
     EXPECT_TRUE(gt_fs.is_open());
     std::ostringstream os;
     //Check case without phenotype: 
