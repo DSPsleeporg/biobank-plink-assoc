@@ -54,7 +54,9 @@ std::pair<std::string, std::vector<std::string>> Genotype_line_parser::parse_lin
         else {
             return invalid_genotype_line();
         }
-        rval_second.push_back(base_str);
+        if (base_str.size() > 0) {
+            rval_second.push_back(base_str);
+        }
     }
     return std::make_pair(snp_str, rval_second);
 }
@@ -82,7 +84,6 @@ std::pair<std::string, std::vector<std::string>> Genotype_line_parser::parse_lin
     //Except that:
     //1. "0" is always mapped to 0 independent of its apperance order. 
     //2. "" should not appear in the result for later use, as "" only appears when there are less than 4 base choices.
-    // We map it to "E" to indicate that there may be error. This can be used for detecting misalignment of the maps. 
     origin_proxy_map["0"] = '0';
     origin_proxy_map[""] = 'E';
     char proxy_char = '1';
@@ -99,7 +100,11 @@ std::pair<std::string, std::vector<std::string>> Genotype_line_parser::parse_lin
         proxy_pair_str.push_back(origin_proxy_map[base_pair_pair.first]);
         proxy_pair_str.push_back(' ');
         proxy_pair_str.push_back(origin_proxy_map[base_pair_pair.second]);
-        proxy_pair_vec.push_back(proxy_pair_str);
+        if (proxy_pair_str != "E E") {
+            //Only adds valid allele pair. 
+            proxy_pair_vec.push_back(proxy_pair_str);
+        }
+        
     }
     return std::make_pair(original_pair.first, proxy_pair_vec);
 }
@@ -142,6 +147,14 @@ std::pair<bool,std::string> Genotype_proxy_map::get_SNP_name(const int allele_po
         return std::make_pair(false,""); 
     }
     return std::make_pair(true, SNP_vec[allele_pos_idx]);
+}
+std::pair<bool, int> Genotype_proxy_map::get_allele_count(const int allele_pos_idx)const {
+    if (_genotype_proxy_status != Genotype_proxy_status::ready || allele_pos_idx >= size()) {
+        return std::make_pair(false, 0);
+    }
+    else {
+        return std::make_pair(true, proxy_allele_matrix[allele_pos_idx].size());
+    }
 }
 std::pair<bool,std::string> Genotype_proxy_map::get_proxy_allele(const int allele_pos_idx, const int allele_type_idx)const {
     if (_genotype_proxy_status != Genotype_proxy_status::ready || allele_pos_idx >= size()) {
@@ -281,4 +294,34 @@ bool Genotype_file_converter::convert(std::istream& is, std::ostream& os, const 
         }
     }
     return true;
+}
+bool Genotype_file_converter::convert(const std::string& input_filename, std::ostream& os, const Genotype_subject_flags& genotype_subject_flags)const {
+    std::fstream gt_fs;//phenotype filestream
+    gt_fs.open(input_filename, std::ios::in);
+    if (!gt_fs.is_open()) {
+        return false;
+    }
+    else {
+        return convert((std::istream&)gt_fs, os, genotype_subject_flags);
+    }
+}
+bool Genotype_file_converter::convert(std::istream& is, const std::string& output_filename, const Genotype_subject_flags& genotype_subject_flags)const {
+    std::fstream gt_fs;//phenotype filestream
+    gt_fs.open(output_filename, std::ios::out);
+    if (!gt_fs.is_open()) {
+        return false;
+    }
+    else {
+        return convert(is, (std::ostream&)gt_fs, genotype_subject_flags);
+    }
+}
+bool Genotype_file_converter::convert(const std::string& input_filename, const std::string& output_filename, const Genotype_subject_flags& genotype_subject_flags)const {
+    std::fstream gt_fs;//phenotype filestream
+    gt_fs.open(output_filename, std::ios::out);
+    if (!gt_fs.is_open()) {
+        return false;
+    }
+    else {
+        return convert(input_filename, (std::ostream&)gt_fs, genotype_subject_flags);
+    }
 }

@@ -445,3 +445,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+test-vsproj/rnd_genotype.csv
+test-vsproj/rnd_phenotype.csv

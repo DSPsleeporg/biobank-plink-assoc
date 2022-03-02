@@ -40,9 +40,9 @@ public:
     //Highlights all (base_choice_idx)th Base pair field (Reserved for GUI features) Returns start_idx, count pair
     // base_choice_idx = 1,2,3,4
     static std::pair<int, int> find_base_idx_range(const Genotype_proxy_flags& genotype_proxy_flags, const std::string& line,const int base_choice_idx);//
-    //Returns pair of SNP idx, and vector of 4 states in original form.
+    //Returns pair of SNP idx, and vector of up to 4 states in original form.
     static std::pair<std::string, std::vector<std::string>> parse_line_for_original(const Genotype_proxy_flags& genotype_proxy_flags, const std::string& line);
-    //Returns pair of SNP idx, and vector of 4 states in its proxy form.
+    //Returns pair of SNP idx, and vector of up to 4 states in its proxy form.
     //Map is distinct for each line, ordered by their apperance in the line.
     //Except that:
     //1. "0" is always mapped to 0 independent of its apperance order. 
@@ -66,6 +66,8 @@ public:
     int size()const;
     //Find SNP at index: NOTE: allele_pos_idx is 0-based, convention used by UK Biobank!
     std::pair<bool,std::string> get_SNP_name(const int allele_pos_idx)const;
+    //Returns the number of different alleles at allele_pos_idx.
+    std::pair<bool, int> get_allele_count(const int allele_pos_idx)const;
     //Find proxy allele at index: NOTE: allele_type_idx is 0-based, convention used by UK Biobank!
     std::pair<bool, std::string> get_proxy_allele(const int allele_pos_idx, const int allele_type_idx)const;
     std::pair<bool, std::string> get_proxy_allele_line(const std::string& raw_genotype_str)const;
