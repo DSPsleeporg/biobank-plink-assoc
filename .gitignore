@@ -447,3 +447,4 @@ FodyWeavers.xsd
 *.sln.iml
 test-vsproj/rnd_genotype.csv
 test-vsproj/rnd_phenotype.csv
+test-vsproj/proxy.ped

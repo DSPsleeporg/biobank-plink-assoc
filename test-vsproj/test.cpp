@@ -377,12 +377,16 @@ TEST(Genotype_file_converter, Genotype_file_converter_test) {
     std::ifstream gt_fs;
     gt_fs.open(g_filename,std::ios_base::in);
     EXPECT_TRUE(gt_fs.is_open());
-    std::ostringstream os;
+    std::ofstream px_fs;//proxy filestream
+    const std::string px_filename = "proxy.ped";
+    px_fs.open(px_filename, std::ios::trunc);
+    EXPECT_TRUE(px_fs.is_open());
     //Check case without phenotype: 
     Genotype_file_converter sp_gfc(&genotype_proxy_map);//sans phenotype genotype file converter:
     //std::string ref_parse_result_no_phenotype = std::string("1000500_90001_0_0_judging.csv ") + "1 1 2 1 1 1 1 1 2 1 1 1 1 1 0 0 0 0 1 2 2 2 2 1 1 1\n";
     EXPECT_TRUE(sp_gfc.is_valid());
-    EXPECT_TRUE(sp_gfc.convert(gt_fs, os, gs_flag));
+    EXPECT_TRUE(sp_gfc.convert(gt_fs, px_fs, gs_flag));
+    Genotype_file_converter p_gfc(&genotype_proxy_map, &discrete_phenotype_map);//phenotype genotype file converter
 }
 TEST(Genotype_file_converter, Genotype_large_file_converter_test) {
     //Set genotype proxy map:
@@ -421,10 +425,13 @@ TEST(Genotype_file_converter, Genotype_large_file_converter_test) {
     std::ifstream gt_fs;
     gt_fs.open(g_filename, std::ios_base::in);
     EXPECT_TRUE(gt_fs.is_open());
-    std::ostringstream os;
+    std::ofstream px_fs;//proxy filestream
+    const std::string px_filename = "proxy.ped";
+    px_fs.open(px_filename, std::ios::trunc);
+    EXPECT_TRUE(px_fs.is_open());
     //Check case without phenotype: 
     Genotype_file_converter sp_gfc(&genotype_proxy_map);//sans phenotype genotype file converter:
     //std::string ref_parse_result_no_phenotype = std::string("1000500_90001_0_0_judging.csv ") + "1 1 2 1 1 1 1 1 2 1 1 1 1 1 0 0 0 0 1 2 2 2 2 1 1 1\n";
     EXPECT_TRUE(sp_gfc.is_valid());
-    EXPECT_TRUE(sp_gfc.convert(gt_fs, os, gs_flag));
+    EXPECT_TRUE(sp_gfc.convert(gt_fs, px_fs, gs_flag));
 }
