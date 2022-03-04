@@ -32,9 +32,9 @@
 \path(DA_G_raw)edge[line] node(DA_G_UKB_DP_p){raw genotype}(DP_G_format);
 \path(DA_P)edge[line] node(DA_P_DP_p){phenotype}(DP_P_format);
 \node (aux_DP) at($(DP_G_format)!0.3!(DP_P_format)$) {};
-\node[block,fill=green!20,right of = aux_DP](DP_C){Convert to binary by \texttt{plink --make bed}};
+\node[block,fill=green!20,right of = aux_DP](DP_C){Convert to binary by \texttt{plink --make-bed}};
 \node (aux_DPC) at($(aux_DP)!0.5!(DP_C)$) {};
-\path(DP_G_format)edge[line]node(DP_G2C){proxy \texttt{ped}}(DP_C);
+\path(DP_G_format)edge[line]node(DP_G2C){proxy \texttt{ped, map}}(DP_C);
 \path(DP_P_format)edge[line,color=blue]node[text width = 6em](DP_P2G){binary/scalar phenotype map}(DP_G_format);
 \path(DP_partition_input)edge[line,color=blue,dashed]node(DP_partition_to_parse){discrete}(DP_P_format);
 \node[block,fill=green!20,right of = DP_C] (AS) {Find potential genes using \texttt{plink --assoc}};
