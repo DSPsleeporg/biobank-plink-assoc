@@ -22,11 +22,25 @@ std::pair<std::string, std::string> Genotype_subject_line_parser::parse_line(con
 std::pair<int, int> Genotype_line_parser::find_SNP_idx_range(const Genotype_proxy_flags& genotype_proxy_flags, const std::string& line){
     return find_idx_range(line, genotype_proxy_flags.SNP_idx, genotype_proxy_flags.delimiter);
 }
+std::pair<int, int> Genotype_line_parser::find_chromosome_idx_range(const Genotype_proxy_flags& genotype_proxy_flags, const std::string& line) {
+    return find_idx_range(line, genotype_proxy_flags.chromosome_idx, genotype_proxy_flags.delimiter);
+}
 std::pair<int, int> Genotype_line_parser::find_base_idx_range(const Genotype_proxy_flags& genotype_proxy_flags, const std::string& line, const int base_choice_idx){
     return find_idx_range(line, genotype_proxy_flags.base_start_idx + base_choice_idx - 1, genotype_proxy_flags.delimiter);
 }
 std::pair<std::string, std::vector<std::string>> invalid_genotype_line() {
     return std::make_pair("", std::vector<std::string>());
+}
+std::string Genotype_line_parser::parse_chromosome(const Genotype_proxy_flags& genotype_proxy_flags, const std::string& line) {
+    const auto idx_range = find_chromosome_idx_range(genotype_proxy_flags, line);
+    std::string rval;
+    if (idx_range.first < line.size() && idx_range.second > 0) {
+        rval = line.substr(idx_range.first, idx_range.second);
+    }
+    else {
+        rval = "0";//plink uses "0" as "unplaced"
+    }
+    return rval;
 }
 std::pair<std::string, std::vector<std::string>> Genotype_line_parser::parse_line_for_original(const Genotype_proxy_flags& genotype_proxy_flags, const std::string& line){
     const auto snp_range = find_SNP_idx_range(genotype_proxy_flags,line);
@@ -132,6 +146,8 @@ bool Genotype_proxy_map::read_map(const std::string& map_filename, const Genotyp
         }
         SNP_vec.push_back(parse_result.first);
         proxy_allele_matrix.push_back(parse_result.second);
+        //Read chromosome: (When chromosome not provided, it defaults to 0, as defined by the Genotype_line_parser
+        chromosome_vec.push_back(Genotype_line_parser::parse_chromosome(genotype_proxy_flags, cur_line));
     }
     _genotype_proxy_status = Genotype_proxy_status::ready;
     return true;
@@ -142,11 +158,38 @@ int Genotype_proxy_map::size()const {
     }
     return SNP_vec.size();
 }
+std::ostream& Genotype_proxy_map::print(std::ostream& os)const {
+    //Recall: plink map format: 4 column space-separated
+    //Chromosome, SNP, genetic distance, base-pair position (we use the index).
+    if (status() != Genotype_proxy_status::ready) {
+        return os;
+    }
+    for (int i = 0; i < size(); i++) {
+        os << get_chromosome_name(i).second << ' ' << get_SNP_name(i).second << " 0 " <<
+            i+1 << '\n';
+    }
+    return os;
+}
+bool Genotype_proxy_map::print(const std::string& filename)const {
+    std::ofstream pm_fs;
+    pm_fs.open(filename, std::ios::trunc);
+    if (!pm_fs.is_open()) {
+        return false;
+    }
+    print(pm_fs);
+    return true;
+}
 std::pair<bool,std::string> Genotype_proxy_map::get_SNP_name(const int allele_pos_idx)const {
     if (_genotype_proxy_status != Genotype_proxy_status::ready || allele_pos_idx >= size()) {
         return std::make_pair(false,""); 
     }
     return std::make_pair(true, SNP_vec[allele_pos_idx]);
+}
+std::pair<bool, std::string> Genotype_proxy_map::get_chromosome_name(const int allele_pos_idx)const {
+    if (_genotype_proxy_status != Genotype_proxy_status::ready || allele_pos_idx >= size()) {
+        return std::make_pair(false, "");
+    }
+    return std::make_pair(true, chromosome_vec[allele_pos_idx]);
 }
 std::pair<bool, int> Genotype_proxy_map::get_allele_count(const int allele_pos_idx)const {
     if (_genotype_proxy_status != Genotype_proxy_status::ready || allele_pos_idx >= size()) {
@@ -204,6 +247,7 @@ bool Genotype_file_converter::is_valid() const{
         return false;
     }
     //Further check requring information about  are not possible.
+    return true;
 }
 enum class Phenotype_map_type {unknown,omitted,discrete,scalar};
 Phenotype_map_type find_phenotype_map_state(const std::string& UID, const Phenotype_map* _pm_ptr) {

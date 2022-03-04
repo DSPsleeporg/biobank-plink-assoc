@@ -220,13 +220,13 @@ Phenotype_status Discrete_phenotype_map::set_phenotype_map(const std::unordered_
             return status();
         }
         else {
-            raw_bisect_map[str] = 1;
+            raw_bisect_map[str] = 2;
             raw_phenotype_set.erase(rps_itr);
         }
     }
-    //Remaining raw phenotypes are negative (0):
+    //Remaining raw phenotypes are negative (1):
     for (const std::string& str : raw_phenotype_set) {
-        raw_bisect_map[str] = 0;
+        raw_bisect_map[str] = 1;
     }
     _phenotype_status = Phenotype_status::ready;
     return status();

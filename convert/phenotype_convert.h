@@ -84,7 +84,7 @@ class Discrete_phenotype_map : public Phenotype_map{
 private:
     Phenotype_status _phenotype_status;
     std::unordered_map<std::string,std::string> uid_raw_map;//Maps uid to raw phenotype
-    std::unordered_map<std::string,int> raw_bisect_map;//Maps raw phenotype to bisected group, represented by 0 and 1.
+    std::unordered_map<std::string,int> raw_bisect_map;//Maps raw phenotype to bisected group, represented by 1 and 2.
 public:
     //Constructor: creates empty map
     Discrete_phenotype_map():_phenotype_status(Phenotype_status::empty){}

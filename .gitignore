@@ -448,3 +448,6 @@ FodyWeavers.xsd
 test-vsproj/rnd_genotype.csv
 test-vsproj/rnd_phenotype.csv
 test-vsproj/proxy.ped
+test-vsproj/proxy.map
+test-vsproj/proxy_large.map
+test-vsproj/proxy_large.ped
