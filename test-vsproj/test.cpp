@@ -440,7 +440,7 @@ TEST(Genotype_file_converter, Genotype_large_file_converter_test) {
     const std::string g_filename = "rnd_genotype.csv";
     //Generate genotype subject and phenotype map from data: 
     const std::string p_filename = "rnd_phenotype.csv";
-    EXPECT_TRUE(generate_genotype_phenotype_subject(genotype_proxy_map, 100, g_filename, 18, p_filename));
+    EXPECT_TRUE(generate_genotype_phenotype_subject(genotype_proxy_map, 5000, g_filename, 18, p_filename));
     //Set phenotype map: 
     Phenotype_flags p_flag;
     p_flag.delimiter = ',';
