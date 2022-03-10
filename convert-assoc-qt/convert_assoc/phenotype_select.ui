@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Phenotype_select</class>
+ <widget class="QDialog" name="Phenotype_select">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>442</width>
+    <height>482</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QPushButton" name="add_file_btn">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>40</y>
+     <width>80</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Add File...</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="phenotype_ds_gbox">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>20</y>
+     <width>191</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>191</width>
+     <height>80</height>
+    </size>
+   </property>
+   <property name="title">
+    <string>Phenotype Discrete? (Select FIRST!)</string>
+   </property>
+   <widget class="QRadioButton" name="discrete_rbtn">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>91</width>
+      <height>22</height>
+     </size>
+    </property>
+    <property name="text">
+     <string>Discrete</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">phenotype_ds_gp</string>
+    </attribute>
+   </widget>
+   <widget class="QRadioButton" name="scalar_rbtn">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>40</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>91</width>
+      <height>22</height>
+     </size>
+    </property>
+    <property name="text">
+     <string>Scalar</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">phenotype_ds_gp</string>
+    </attribute>
+   </widget>
+  </widget>
+  <widget class="QTextBrowser" name="neg_txt">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>110</y>
+     <width>391</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="placeholderText">
+    <string>Negative discrete phenotypes</string>
+   </property>
+  </widget>
+  <widget class="QTextBrowser" name="pos_txt">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>180</y>
+     <width>391</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="placeholderText">
+    <string>Positive discrete phenotypes</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="pos_add_txt">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>250</y>
+     <width>131</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="placeholderText">
+    <string>Single discrete phenotype</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pos_add_btn">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>250</y>
+     <width>101</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Add as positive</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pos_rmv_btn">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>250</y>
+     <width>111</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Revert as negative</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="fin_btn">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>350</y>
+     <width>141</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Finalize phenotype</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="phenotype_ds_gp"/>
+ </buttongroups>
+</ui>

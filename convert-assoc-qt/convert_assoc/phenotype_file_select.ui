@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Phenotype_file_select</class>
+ <widget class="QDialog" name="Phenotype_file_select">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>422</width>
+    <height>473</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Phenotype path:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QLineEdit" name="path_txt">
+     <property name="placeholderText">
+      <string>/path/to/phenotype</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>UID (cyan)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QSpinBox" name="uid_box">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>phenotype (magenta)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QSpinBox" name="pht_box">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="value">
+      <number>2</number>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QCheckBox" name="skip_cbox">
+     <property name="text">
+      <string>Skip first line</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QGroupBox" name="delimiter_box">
+     <property name="minimumSize">
+      <size>
+       <width>281</width>
+       <height>80</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Delimiter</string>
+     </property>
+     <widget class="QRadioButton" name="tab_rbtn">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>91</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Tab</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">dlm_btn_gp</string>
+      </attribute>
+     </widget>
+     <widget class="QRadioButton" name="cmm_rbtn">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>40</y>
+        <width>91</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Comma</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">dlm_btn_gp</string>
+      </attribute>
+     </widget>
+     <widget class="QRadioButton" name="scn_rbtn">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>40</y>
+        <width>91</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Semicolon</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">dlm_btn_gp</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="QTextBrowser" name="preview_txt">
+     <property name="placeholderText">
+      <string>Preview of parse result</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QPushButton" name="preview_btn">
+     <property name="text">
+      <string>Preview</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QPushButton" name="ok_btn">
+     <property name="text">
+      <string>OK (Patience...)</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="dlm_btn_gp"/>
+ </buttongroups>
+</ui>

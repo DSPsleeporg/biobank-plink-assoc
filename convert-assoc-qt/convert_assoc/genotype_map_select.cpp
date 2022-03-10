@@ -4,13 +4,14 @@
 #include <QTextStream>
 #include <QSyntaxHighlighter>
 Genotype_map_select::Genotype_map_select(Genotype_proxy_map& genotype_proxy_map,QWidget *parent)
-    : QWidget(parent),_genotype_proxy_map_ref(genotype_proxy_map)
+    : QDialog(parent),_genotype_proxy_map_ref(genotype_proxy_map)
     , ui(new Ui::Genotype_map_select)
 {
     ui->setupUi(this);
     //Set gp_flag default values.
     _gp_flag.skip_first_row = false;
     _gp_flag.delimiter = '\t';
+    ui->tab_rbtn->setChecked(true);
     _gp_flag.SNP_idx = 1;
     _gp_flag.chromosome_idx = 2;
     _gp_flag.base_start_idx = 4;
@@ -116,6 +117,34 @@ void Genotype_map_select::on_gmap_chrmosome_box_valueChanged(int arg1)
 void Genotype_map_select::on_gmap_base_box_valueChanged(int arg1)
 {
     _gp_flag.base_start_idx = arg1;
+    refresh_preview();
+}
+
+
+void Genotype_map_select::on_tab_rbtn_clicked()
+{
+    _gp_flag.delimiter = '\t';
+    refresh_preview();
+}
+
+
+void Genotype_map_select::on_comma_rbtn_clicked()
+{
+    _gp_flag.delimiter = ',';
+    refresh_preview();
+}
+
+
+void Genotype_map_select::on_semicolon_rbtn_clicked()
+{
+    _gp_flag.delimiter = ';';
+    refresh_preview();
+}
+
+
+void Genotype_map_select::on_skip_cbox_stateChanged(int arg1)
+{
+    _gp_flag.skip_first_row = ui->skip_cbox->isChecked();
     refresh_preview();
 }
 

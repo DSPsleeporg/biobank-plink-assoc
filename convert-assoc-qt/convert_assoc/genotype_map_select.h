@@ -1,13 +1,14 @@
 #ifndef GENOTYPE_MAP_SELECT_H
 #define GENOTYPE_MAP_SELECT_H
 #include <string>
+#include <QDialog>
 #include <QWidget>
 #include "..\..\convert\genotype_convert.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class Genotype_map_select; }
 QT_END_NAMESPACE
 
-class Genotype_map_select : public QWidget
+class Genotype_map_select : public QDialog
 {
     Q_OBJECT
     Genotype_proxy_map& _genotype_proxy_map_ref;
@@ -30,6 +31,14 @@ private slots:
 
     void refresh_preview();
     void refresh_preview_highlight(const QString& line);
+    void on_tab_rbtn_clicked();
+
+    void on_comma_rbtn_clicked();
+
+    void on_semicolon_rbtn_clicked();
+
+    void on_skip_cbox_stateChanged(int arg1);
+
 private:
     Ui::Genotype_map_select *ui;
     void get_genotype_map_path();

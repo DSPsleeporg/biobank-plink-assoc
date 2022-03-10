@@ -1,8 +1,12 @@
 #include "genotype_map_select.h"
+#include "phenotype_select.h"
+#include "exception_dialog.h"
 #include "..\..\convert\genotype_convert.h"
+#include "..\..\convert\phenotype_convert.h"
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
+#include <QEventLoop>
 
 int main(int argc, char *argv[])
 {
@@ -18,7 +22,19 @@ int main(int argc, char *argv[])
         }
     }
     Genotype_proxy_map genotype_proxy_map;
-    Genotype_map_select w(genotype_proxy_map);
-    w.show();
+    Genotype_map_select genotype_map_select(genotype_proxy_map);
+    genotype_map_select.exec();
+    if (genotype_proxy_map.status() != Genotype_proxy_status::ready){
+        show_exception_dialogue("Loading genotype map file failed.");
+        return -1;
+    }
+    bool phenotype_discrete = true;
+    Phenotype_map* phenotype_map_ptr = nullptr;//Set as ptr since phenotype_map is abstract.
+    Phenotype_select phenotype_select(phenotype_map_ptr,phenotype_discrete);
+    phenotype_select.exec();
+    if (phenotype_map_ptr->status() != Phenotype_status::ready){
+        show_exception_dialogue("Loading phenotype failed.");
+        return -1;
+    }
     return a.exec();
 }
