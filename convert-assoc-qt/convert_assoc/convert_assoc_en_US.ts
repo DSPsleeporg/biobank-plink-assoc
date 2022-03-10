@@ -5,7 +5,7 @@
     <name>Exception_dialog</name>
     <message>
         <location filename="exception_dialog.ui" line="14"/>
-        <source>Dialog</source>
+        <source>Exception (Error or Warning)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -23,7 +23,8 @@
     <name>Genotype_map_select</name>
     <message>
         <location filename="genotype_map_select.ui" line="14"/>
-        <source>Genotype_map_select</source>
+        <source>Genotype map select</source>
+        <oldsource>Genotype_map_select</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -99,7 +100,7 @@
     <name>Phenotype_file_select</name>
     <message>
         <location filename="phenotype_file_select.ui" line="14"/>
-        <source>Dialog</source>
+        <source>Phenotype file select</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -167,7 +168,7 @@
     <name>Phenotype_select</name>
     <message>
         <location filename="phenotype_select.ui" line="14"/>
-        <source>Dialog</source>
+        <source>Phenotype select</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

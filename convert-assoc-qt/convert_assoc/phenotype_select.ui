@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Phenotype select</string>
   </property>
   <widget class="QPushButton" name="add_file_btn">
    <property name="geometry">
