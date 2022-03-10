@@ -39,7 +39,7 @@
     </widget>
    </item>
    <item row="5" column="0" colspan="2">
-    <widget class="QTextBrowser" name="textBrowser">
+    <widget class="QTextBrowser" name="gmap_preview_txt">
      <property name="placeholderText">
       <string>Preview of parse result</string>
      </property>
