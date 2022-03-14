@@ -172,53 +172,53 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="phenotype_select.ui" line="26"/>
+        <location filename="phenotype_select.ui" line="20"/>
         <source>Add File...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="phenotype_select.ui" line="45"/>
+        <location filename="phenotype_select.ui" line="33"/>
         <source>Phenotype Discrete? (Select FIRST!)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="phenotype_select.ui" line="63"/>
+        <location filename="phenotype_select.ui" line="45"/>
         <source>Discrete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="phenotype_select.ui" line="85"/>
+        <location filename="phenotype_select.ui" line="61"/>
         <source>Scalar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="phenotype_select.ui" line="102"/>
+        <location filename="phenotype_select.ui" line="74"/>
         <source>Negative discrete phenotypes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="phenotype_select.ui" line="115"/>
+        <location filename="phenotype_select.ui" line="81"/>
         <source>Positive discrete phenotypes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="phenotype_select.ui" line="128"/>
+        <location filename="phenotype_select.ui" line="88"/>
         <source>Single discrete phenotype</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="phenotype_select.ui" line="141"/>
+        <location filename="phenotype_select.ui" line="95"/>
         <source>Add as positive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="phenotype_select.ui" line="154"/>
+        <location filename="phenotype_select.ui" line="102"/>
         <source>Revert as negative</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="phenotype_select.ui" line="167"/>
-        <source>Finalize phenotype</source>
+        <location filename="phenotype_select.ui" line="109"/>
+        <source>Finalize phenotype (Patience...)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
