@@ -24,16 +24,19 @@ set(PROJECT_SOURCES
         phenotype_select.cpp
         phenotype_file_select.cpp
         exception_dialog.cpp
+        info_dialog.cpp
         ../../convert/genotype_convert.h
         ../../convert/phenotype_convert.h
         genotype_map_select.h
         phenotype_select.h
         phenotype_file_select.h
         exception_dialog.h
+        info_dialog.h
         genotype_map_select.ui
         phenotype_select.ui
         phenotype_file_select.ui
         exception_dialog.ui
+        info_dialog.ui
         ${TS_FILES}
 )
 

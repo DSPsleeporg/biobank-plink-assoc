@@ -3,6 +3,11 @@
 #include <QFile>
 #include <QTextStream>
 #include <QSyntaxHighlighter>
+#include "info_dialog.h"
+void Genotype_map_compute::run(){
+    _gpm->read_map(_gpfn->toStdString(),*_gpf);
+    emit load_finished();
+}
 Genotype_map_select::Genotype_map_select(Genotype_proxy_map& genotype_proxy_map,QWidget *parent)
     : QDialog(parent),_genotype_proxy_map_ref(genotype_proxy_map)
     , ui(new Ui::Genotype_map_select)
@@ -19,7 +24,13 @@ Genotype_map_select::Genotype_map_select(Genotype_proxy_map& genotype_proxy_map,
 void Genotype_map_select::get_genotype_map_path(){
     _gp_filename = ui->gmap_path_txt->text();
     //TODO: Change flags using radio buttons, etc.
-    _genotype_proxy_map_ref.read_map(_gp_filename.toStdString(),_gp_flag);
+    //_genotype_proxy_map_ref.read_map(_gp_filename.toStdString(),_gp_flag);
+    Genotype_map_compute genotype_map_compute(&_genotype_proxy_map_ref,&_gp_flag,&_gp_filename);
+    Info_dialog info_dialog("Loading...");
+    connect(&genotype_map_compute,&Genotype_map_compute::load_finished,&info_dialog,&Info_dialog::close);
+    genotype_map_compute.start(QThread::LowPriority);
+    info_dialog.exec();
+    genotype_map_compute.wait();
     close();
 }
 Genotype_map_select::~Genotype_map_select()

@@ -97,6 +97,19 @@
     </message>
 </context>
 <context>
+    <name>Info_dialog</name>
+    <message>
+        <location filename="info_dialog.ui" line="14"/>
+        <source>Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="info_dialog.ui" line="26"/>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Phenotype_file_select</name>
     <message>
         <location filename="phenotype_file_select.ui" line="14"/>

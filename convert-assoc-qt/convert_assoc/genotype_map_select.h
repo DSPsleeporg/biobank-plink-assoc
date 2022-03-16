@@ -3,10 +3,23 @@
 #include <string>
 #include <QDialog>
 #include <QWidget>
+#include <QtCore>
 #include "..\..\convert\genotype_convert.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class Genotype_map_select; }
 QT_END_NAMESPACE
+class Genotype_map_compute : public QThread{
+    Q_OBJECT
+    Genotype_proxy_map* _gpm;
+    const Genotype_proxy_flags* _gpf;
+    const QString* _gpfn;
+public:
+    Genotype_map_compute(Genotype_proxy_map* gpm, const Genotype_proxy_flags* gpf, const QString* gpfn, QObject* parent = nullptr):
+        QThread(parent),_gpm(gpm),_gpf(gpf),_gpfn(gpfn){}
+    void run() override;
+signals:
+    void load_finished();
+};
 
 class Genotype_map_select : public QDialog
 {
@@ -42,5 +55,6 @@ private slots:
 private:
     Ui::Genotype_map_select *ui;
     void get_genotype_map_path();
+
 };
 #endif // GENOTYPE_MAP_SELECT_H
