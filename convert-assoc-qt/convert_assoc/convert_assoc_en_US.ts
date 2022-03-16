@@ -104,7 +104,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="info_dialog.ui" line="26"/>
+        <location filename="info_dialog.ui" line="20"/>
         <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
