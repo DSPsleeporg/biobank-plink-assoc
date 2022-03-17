@@ -56,7 +56,8 @@ public:
 };
 class Genotype_proxy_map {
     Genotype_proxy_status _genotype_proxy_status;
-    std::vector<std::vector<std::string>> proxy_allele_matrix;
+    std::vector<std::vector<int>> proxy_allele_matrix;
+    //each proxy allele pair is of length 4: "1 2" = '1 2\0', same width as an int. 
     std::vector<std::string> SNP_vec;
     std::vector<std::string> chromosome_vec;
 public: 
@@ -81,7 +82,10 @@ public:
     //Returns (true,proxy_allele) if values are within bound, returns (false,"") otherwise. 
     std::pair<bool, std::string> get_proxy_allele(const int allele_pos_idx, const int allele_type_idx)const;
     std::pair<bool, std::string> get_proxy_allele_line(const std::string& raw_genotype_str)const;
+private:
+    inline void _get_proxy_allele(const int allele_pos_idx, const int allele_type_idx, char& base1, char& base2)const;
 };
+enum class Genotype_file_convert_status { success, genotype_map_fail, phenotype_map_fail, input_file_fail, output_file_fail, size_mismatch_fail, UID_miss_fail, phenotype_miss_fail, genotype_file_invalid_fail };
 class Genotype_file_converter {
     //Converts raw genotype file to proxy ped file used by plink --make bed.
     //Workflow:
@@ -93,15 +97,15 @@ class Genotype_file_converter {
 public:
     //Constructor: genotype and phenotype
     Genotype_file_converter(const Genotype_proxy_map* genotype_proxy_map_ptr, const Phenotype_map* phenotype_map_ptr = nullptr);
-    bool is_valid()const;
+    Genotype_file_convert_status is_valid()const;
     //convert functions: returns true if convertion is sucessful.
     //When false is returned, no gurantee that output is not modified. 
     //Operate on input/output by lines, only loads single line into memory. 
     //Convert output lines formatted as follows: 
     //UID (Phenotype?) Proxy_allele
     //Output matches plink flags --no-fid --no-parents --no-sex (!--no-pheno?)
-    bool convert(std::istream& is, std::ostream& os, const Genotype_subject_flags& genotype_subject_flags)const;
-    bool convert(const std::string& input_filename, std::ostream& os, const Genotype_subject_flags& genotype_subject_flags)const;
-    bool convert(std::istream& is, const std::string& output_filename, const Genotype_subject_flags& genotype_subject_flags)const;
-    bool convert(const std::string& input_filename, const std::string& output_filename, const Genotype_subject_flags& genotype_subject_flags)const;
+    Genotype_file_convert_status convert(std::istream& is, std::ostream& os, const Genotype_subject_flags& genotype_subject_flags)const;
+    Genotype_file_convert_status convert(const std::string& input_filename, std::ostream& os, const Genotype_subject_flags& genotype_subject_flags)const;
+    Genotype_file_convert_status convert(std::istream& is, const std::string& output_filename, const Genotype_subject_flags& genotype_subject_flags)const;
+    Genotype_file_convert_status convert(const std::string& input_filename, const std::string& output_filename, const Genotype_subject_flags& genotype_subject_flags)const;
 };

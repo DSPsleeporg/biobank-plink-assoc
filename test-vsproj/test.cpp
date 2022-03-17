@@ -5,6 +5,10 @@
 #include <sstream>
 #include <algorithm>
 #include <random>
+#include <mutex>
+#include <thread>
+#include <numeric>
+#include <execution>
 TEST(Phenotype_parse, Initiate) {
     Discrete_phenotype_map discrete_phenotype_map;
     EXPECT_EQ(discrete_phenotype_map.status(), Phenotype_status::empty);
@@ -311,8 +315,8 @@ TEST(Genotype_file_converter, Genotype_stream_converter_test) {
     //Check case without phenotype: 
     Genotype_file_converter sp_gfc(&genotype_proxy_map);//sans phenotype genotype file converter:
     std::string ref_parse_result_no_phenotype = std::string("1000500_90001_0_0_judging.csv ") + "1 1 2 1 1 1 1 1 2 1 1 1 1 1 0 0 0 0 1 2 2 2 2 1 1 1\n";
-    EXPECT_TRUE(sp_gfc.is_valid());
-    EXPECT_TRUE(sp_gfc.convert(is, os, gs_flag));
+    EXPECT_EQ(sp_gfc.is_valid(), Genotype_file_convert_status::success);
+    EXPECT_EQ(sp_gfc.convert(is, os, gs_flag), Genotype_file_convert_status::success);
     EXPECT_EQ(os.str(), ref_parse_result_no_phenotype);
 }
 namespace biased_dist {
@@ -336,10 +340,31 @@ int biased_phenotype(const int allele_type_idx, std::mt19937& gen) {
         return d3(gen);
     }
 }
-bool generate_genotype_phenotype_subject(const Genotype_proxy_map& genotype_proxy_map, const int subject_count,const std::string& out_genotype_filename,
-    const int bias_index, const std::string& out_phenotype_filename) {
+std::pair <std::string, std::string> generate_genotype_phenotype_subject_line(const int uid, const int bias_index, const Genotype_proxy_map& genotype_proxy_map) {
+    std::string pt_line;
+    std::string gt_line;
     std::random_device rd;
     std::mt19937 gen(rd());
+    gt_line.append(std::to_string(uid)+"\t");
+    pt_line.append(std::to_string(uid) + ",");
+    const int M = genotype_proxy_map.size();
+    for (int j = 0; j < M; j++) {
+        const int allele_count = genotype_proxy_map.get_allele_count(j).second;
+        //Recall: allele_type_idx is 0-based, convention used by UK Biobank
+        std::uniform_int_distribution<> ui_dist(0, allele_count - 1);
+        const int rnd_val = ui_dist(gen);
+        gt_line.append(std::to_string(rnd_val));
+        if (j == bias_index) {
+            pt_line.append(std::to_string(biased_phenotype(rnd_val, gen)));
+        }
+    }
+    pt_line.append(1, '\n');
+    gt_line.append(1, '\n');
+    return make_pair(pt_line, gt_line);
+}
+bool generate_genotype_phenotype_subject(const Genotype_proxy_map& genotype_proxy_map, const int subject_count,const std::string& out_genotype_filename,
+    const int bias_index, const std::string& out_phenotype_filename) {
+
     std::ofstream gt_fs;
     std::ofstream pt_fs;
     gt_fs.open(out_genotype_filename, std::ios::trunc);
@@ -347,23 +372,17 @@ bool generate_genotype_phenotype_subject(const Genotype_proxy_map& genotype_prox
     if (!gt_fs.is_open() || !pt_fs.is_open()) {
         return false;
     }
-    const int M = genotype_proxy_map.size();
+    
     //In the generated file, each subject has UID [ 1, subject_count], with raw genotype of length M separated by \t
-    for (int i = 0; i < subject_count; i++) {
-        gt_fs << i+1 << '\t';
-        pt_fs << i+1 << ',';
-        for (int j = 0; j < M; j++) {
-            const int allele_count = genotype_proxy_map.get_allele_count(j).second;
-            //Recall: allele_type_idx is 0-based, convention used by UK Biobank
-            std::uniform_int_distribution<> ui_dist(0, allele_count - 1);
-            const int rnd_val = ui_dist(gen);
-            gt_fs << rnd_val;
-            if (j == bias_index) {
-                pt_fs << biased_phenotype(rnd_val, gen) << '\n';
-            }
-        }
-        gt_fs << '\n';
-    }
+    std::vector<int> uid_vector(subject_count);
+    std::iota(uid_vector.begin(), uid_vector.end(), 1);
+    std::mutex fs_mutex;
+    std::for_each(std::execution::par_unseq,uid_vector.begin(), uid_vector.end(), [&](const int uid) {
+        const auto line_pair = generate_genotype_phenotype_subject_line(uid + 1, bias_index, genotype_proxy_map);
+        std::lock_guard<std::mutex> lock(fs_mutex);
+        pt_fs << line_pair.first;
+        gt_fs << line_pair.second;
+        });
     pt_fs.close();
     gt_fs.close();
     return true;
@@ -390,7 +409,7 @@ TEST(Genotype_file_converter, Genotype_file_converter_test) {
     const std::string g_filename = "rnd_genotype.csv";
     //Generate genotype subject and phenotype map from data: 
     const std::string p_filename = "rnd_phenotype.csv";
-    EXPECT_TRUE(generate_genotype_phenotype_subject(genotype_proxy_map, 20000, g_filename, 18, p_filename));
+    EXPECT_TRUE(generate_genotype_phenotype_subject(genotype_proxy_map, 2000, g_filename, 18, p_filename));
     //Set phenotype map: 
     Phenotype_flags p_flag;
     p_flag.delimiter = ',';
@@ -416,8 +435,8 @@ TEST(Genotype_file_converter, Genotype_file_converter_test) {
     EXPECT_TRUE(px_fs.is_open());
     //Check case with phenotype: (Currently, output to files, then run in plink)
     Genotype_file_converter p_gfc(&genotype_proxy_map, static_cast<Phenotype_map*>(&discrete_phenotype_map));
-    EXPECT_TRUE(p_gfc.is_valid());
-    EXPECT_TRUE(p_gfc.convert(gt_fs, px_fs, gs_flag));
+    EXPECT_EQ(p_gfc.is_valid(), Genotype_file_convert_status::success);
+    EXPECT_EQ(p_gfc.convert(gt_fs, px_fs, gs_flag), Genotype_file_convert_status::success);
 }
 TEST(Genotype_file_converter, Genotype_large_file_converter_test) {
     //Set genotype proxy map:
@@ -440,7 +459,7 @@ TEST(Genotype_file_converter, Genotype_large_file_converter_test) {
     const std::string g_filename = "rnd_genotype.csv";
     //Generate genotype subject and phenotype map from data: 
     const std::string p_filename = "rnd_phenotype.csv";
-    EXPECT_TRUE(generate_genotype_phenotype_subject(genotype_proxy_map, 5000, g_filename, 18, p_filename));
+    EXPECT_TRUE(generate_genotype_phenotype_subject(genotype_proxy_map, 2000, g_filename, 18, p_filename));
     //Set phenotype map: 
     Phenotype_flags p_flag;
     p_flag.delimiter = ',';
@@ -465,8 +484,8 @@ TEST(Genotype_file_converter, Genotype_large_file_converter_test) {
     px_fs.open(px_filename, std::ios::trunc);
     EXPECT_TRUE(px_fs.is_open());
     //Check case with phenotype: 
-    Genotype_file_converter p_gfc(&genotype_proxy_map,static_cast<Phenotype_map*>(&discrete_phenotype_map));//sans phenotype genotype file converter:
+    Genotype_file_converter p_gfc(&genotype_proxy_map,static_cast<Phenotype_map*>(&discrete_phenotype_map));//phenotype genotype file converter:
     //std::string ref_parse_result_no_phenotype = std::string("1000500_90001_0_0_judging.csv ") + "1 1 2 1 1 1 1 1 2 1 1 1 1 1 0 0 0 0 1 2 2 2 2 1 1 1\n";
-    EXPECT_TRUE(p_gfc.is_valid());
-    EXPECT_TRUE(p_gfc.convert(gt_fs, px_fs, gs_flag));
+    EXPECT_EQ(p_gfc.is_valid(), Genotype_file_convert_status::success);
+    EXPECT_EQ(p_gfc.convert(gt_fs, px_fs, gs_flag), Genotype_file_convert_status::success);
 }
