@@ -3,6 +3,7 @@
 #include "exception_dialog.h"
 #include "..\..\convert\genotype_convert.h"
 #include "..\..\convert\phenotype_convert.h"
+#include "genotype_main.h"
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
@@ -37,5 +38,7 @@ int main(int argc, char *argv[])
         return -1;
     }
     Genotype_file_converter genotype_file_converter(&genotype_proxy_map,phenotype_map_ptr);
+    Genotype_main genotype_main(&genotype_file_converter);
+    genotype_main.exec();
     return a.exec();
 }

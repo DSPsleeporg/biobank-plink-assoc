@@ -123,10 +123,10 @@ void Genotype_main::on_gm_add_btn_clicked()
     Genotype_subject_flags gs_f;
     Genotype_file_select gfs(g_filename,gs_f);
     gfs.exec();
-    QThread* compute_thread = new QThread;
+    file_update_status(g_filename,Genotype_file_convert_status::in_progress);
     Genotype_file_compute gfc(_gfc_ptr,g_filename,gs_f);
-    gfc.moveToThread(compute_thread);
+    gfc.moveToThread(&_compute_thread);
+    connect(&gfc,&Genotype_file_compute::genotype_file_finished,this,&Genotype_main::file_update_status);
     gfc.start();
-    refresh_table();
 }
 

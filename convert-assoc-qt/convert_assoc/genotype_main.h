@@ -28,6 +28,7 @@ signals:
 class Genotype_main : public QDialog
 {
     Q_OBJECT
+    QThread _compute_thread;
     const Genotype_file_converter* _gfc_ptr;
     Info_dialog* wait_dialog_ptr = nullptr;
     std::map<QString,Genotype_file_convert_status> file_map;
