@@ -20,6 +20,92 @@
     </message>
 </context>
 <context>
+    <name>Genotype_file_select</name>
+    <message>
+        <location filename="genotype_file_select.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_file_select.ui" line="20"/>
+        <source>Genotype Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_file_select.ui" line="27"/>
+        <source>/path/to/genotype/file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_file_select.ui" line="34"/>
+        <source>UID (cyan)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_file_select.ui" line="51"/>
+        <source>genotype (magenta)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_file_select.ui" line="71"/>
+        <source>Skip first line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_file_select.ui" line="84"/>
+        <source>Delimiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_file_select.ui" line="102"/>
+        <source>Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_file_select.ui" line="124"/>
+        <source>Comma</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_file_select.ui" line="140"/>
+        <source>Semicolon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_file_select.ui" line="151"/>
+        <source>Preview of parse result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_file_select.ui" line="158"/>
+        <source>Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_file_select.ui" line="165"/>
+        <source>Queue</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Genotype_main</name>
+    <message>
+        <location filename="genotype_main.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_main.ui" line="30"/>
+        <source>Add File...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_main.ui" line="37"/>
+        <source>OK (Patience...)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Genotype_map_select</name>
     <message>
         <location filename="genotype_map_select.ui" line="14"/>

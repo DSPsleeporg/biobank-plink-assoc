@@ -2,7 +2,6 @@
 #include "ui_phenotype_file_select.h"
 #include <QFile>
 #include <QTextStream>
-#include <QSyntaxHighlighter>
 #include <info_dialog.h>
 Phenotype_file_compute::Phenotype_file_compute(Phenotype_map& _ph_map_ref,const Phenotype_flags& _ph_flag_ref, const QString& _ph_filename, QObject* parent):
     QThread(parent),
@@ -48,7 +47,7 @@ void Phenotype_file_select::refresh_preview(){
     refresh_preview_highlight(line);
 }
 enum class Phenotype_text_state{plain,UID,pheno};
-Phenotype_text_state find_state_at_index(const int idx, const std::pair<int,int>& UID_range, const std::pair<int,int>& pheno_range){
+Phenotype_text_state find_state_at_index(const int idx, const std::pair<int,int> UID_range, const std::pair<int,int> pheno_range){
     if (idx >= UID_range.first && idx < UID_range.first + UID_range.second){
         return Phenotype_text_state::UID;
     }

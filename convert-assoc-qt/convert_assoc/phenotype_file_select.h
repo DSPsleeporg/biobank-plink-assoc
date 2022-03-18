@@ -11,8 +11,8 @@ class Phenotype_file_select;
 class Phenotype_file_compute : public QThread{
     Q_OBJECT
     Phenotype_map& _ph_map_ref;
-    const Phenotype_flags& _ph_flag_ref;
-    const QString& _ph_filename;
+    const Phenotype_flags _ph_flag_ref;
+    const QString _ph_filename;
 public:
     Phenotype_file_compute(Phenotype_map&, const Phenotype_flags&, const QString&, QObject* parent=nullptr);
     void run() override;

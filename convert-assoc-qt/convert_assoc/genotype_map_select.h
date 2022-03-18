@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QWidget>
 #include <QtCore>
-#include "..\..\convert\genotype_convert.h"
+#include "../../convert/genotype_convert.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class Genotype_map_select; }
 QT_END_NAMESPACE

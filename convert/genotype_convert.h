@@ -85,7 +85,7 @@ public:
 private:
     inline void _get_proxy_allele(const int allele_pos_idx, const int allele_type_idx, char& base1, char& base2)const;
 };
-enum class Genotype_file_convert_status { success, genotype_map_fail, phenotype_map_fail, input_file_fail, output_file_fail, size_mismatch_fail, UID_miss_fail, phenotype_miss_fail, genotype_file_invalid_fail };
+enum class Genotype_file_convert_status { success, genotype_map_fail, phenotype_map_fail, input_file_fail, output_file_fail, size_mismatch_fail, UID_miss_fail, phenotype_miss_fail, genotype_file_invalid_fail, in_progress};
 class Genotype_file_converter {
     //Converts raw genotype file to proxy ped file used by plink --make bed.
     //Workflow:

@@ -36,5 +36,6 @@ int main(int argc, char *argv[])
         show_exception_dialogue("Loading phenotype failed.");
         return -1;
     }
+    Genotype_file_converter genotype_file_converter(&genotype_proxy_map,phenotype_map_ptr);
     return a.exec();
 }
