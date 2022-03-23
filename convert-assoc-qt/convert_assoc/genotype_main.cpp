@@ -106,10 +106,11 @@ bool Genotype_main::refresh_table(){
 void Genotype_main::finalize(){
     //Finalize by combining all temp files, close dialogs...
     //Finzalize only occurs when OK is clicked, and wait_dialog created:
+    emit all_load_finished();
     std::fstream ofs;
     ofs.open("proxy.ped",std::ios_base::out | std::ios_base::binary);
     if (!ofs.is_open()){
-        emit all_load_finished();
+
         close();
         return;
     }
@@ -125,7 +126,6 @@ void Genotype_main::finalize(){
         ifs.close();
         std::remove(tmp_filename.c_str());
     }
-    emit all_load_finished();
     close();
 }
 void Genotype_main::on_gm_ok_btn_clicked()
