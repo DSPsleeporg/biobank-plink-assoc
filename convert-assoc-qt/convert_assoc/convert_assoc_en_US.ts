@@ -57,18 +57,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_file_select.ui" line="102"/>
+        <location filename="genotype_file_select.ui" line="96"/>
         <source>Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_file_select.ui" line="124"/>
+        <location filename="genotype_file_select.ui" line="112"/>
         <source>Comma</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_file_select.ui" line="140"/>
+        <location filename="genotype_file_select.ui" line="122"/>
         <source>Semicolon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_file_select.ui" line="138"/>
+        <source>Space</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -95,12 +100,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_main.ui" line="30"/>
+        <location filename="genotype_main.ui" line="20"/>
         <source>Add File...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_main.ui" line="37"/>
+        <location filename="genotype_main.ui" line="27"/>
         <source>OK (Patience...)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -114,12 +119,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_map_select.ui" line="131"/>
+        <location filename="genotype_map_select.ui" line="147"/>
         <source>Genotype map path:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_map_select.ui" line="161"/>
+        <location filename="genotype_map_select.ui" line="177"/>
         <source>/path/to/dictionary/</source>
         <translation type="unfinished"></translation>
     </message>
@@ -150,12 +155,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_map_select.ui" line="118"/>
+        <location filename="genotype_map_select.ui" line="86"/>
         <source>Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_map_select.ui" line="175"/>
+        <location filename="genotype_map_select.ui" line="134"/>
+        <source>Space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_map_select.ui" line="191"/>
         <source>Skip first line</source>
         <translation type="unfinished"></translation>
     </message>
@@ -165,12 +175,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_map_select.ui" line="86"/>
+        <location filename="genotype_map_select.ui" line="118"/>
         <source>Semicolon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_map_select.ui" line="168"/>
+        <location filename="genotype_map_select.ui" line="184"/>
         <source>Chromosome (magenta)</source>
         <oldsource>Chromosome</oldsource>
         <translation type="unfinished"></translation>
@@ -233,18 +243,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="phenotype_file_select.ui" line="90"/>
+        <location filename="phenotype_file_select.ui" line="84"/>
         <source>Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="phenotype_file_select.ui" line="106"/>
+        <location filename="phenotype_file_select.ui" line="94"/>
         <source>Comma</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="phenotype_file_select.ui" line="122"/>
+        <location filename="phenotype_file_select.ui" line="104"/>
         <source>Semicolon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="phenotype_file_select.ui" line="120"/>
+        <source>Space</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

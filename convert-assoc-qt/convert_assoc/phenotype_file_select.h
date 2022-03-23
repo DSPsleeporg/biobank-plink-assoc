@@ -48,6 +48,8 @@ private slots:
 
     void on_ok_btn_clicked();
 
+    void on_space_rbtn_clicked();
+
 private:
     Ui::Phenotype_file_select *ui;
     void refresh_preview();

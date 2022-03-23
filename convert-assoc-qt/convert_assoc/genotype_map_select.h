@@ -52,6 +52,8 @@ private slots:
 
     void on_skip_cbox_stateChanged(int arg1);
 
+    void on_space_rbtn_clicked();
+
 private:
     Ui::Genotype_map_select *ui;
     void get_genotype_map_path();

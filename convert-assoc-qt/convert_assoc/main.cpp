@@ -40,5 +40,6 @@ int main(int argc, char *argv[])
     Genotype_file_converter genotype_file_converter(&genotype_proxy_map,phenotype_map_ptr);
     Genotype_main genotype_main(&genotype_file_converter);
     genotype_main.exec();
-    return a.exec();
+    return 0;
+    //return a.exec();
 }

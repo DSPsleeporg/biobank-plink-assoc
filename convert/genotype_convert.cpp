@@ -304,6 +304,7 @@ Genotype_file_convert_status convert_file_from_lines(std::string& out_lines, con
         //Prints Phenotype:
         switch (pm_t)
         {
+        case Phenotype_map_type::unknown:
         case Phenotype_map_type::omitted:
             //Optional phenotype not provided to file_converter.
             break;

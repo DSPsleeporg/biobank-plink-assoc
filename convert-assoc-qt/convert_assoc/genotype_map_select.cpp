@@ -152,10 +152,18 @@ void Genotype_map_select::on_semicolon_rbtn_clicked()
     refresh_preview();
 }
 
+void Genotype_map_select::on_space_rbtn_clicked()
+{
+    _gp_flag.delimiter = ' ';
+    refresh_preview();
+}
 
 void Genotype_map_select::on_skip_cbox_stateChanged(int arg1)
 {
     _gp_flag.skip_first_row = ui->skip_cbox->isChecked();
     refresh_preview();
 }
+
+
+
 

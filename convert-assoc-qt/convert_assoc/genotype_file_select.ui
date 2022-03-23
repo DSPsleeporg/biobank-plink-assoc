@@ -83,66 +83,66 @@
      <property name="title">
       <string>Delimiter</string>
      </property>
-     <widget class="QRadioButton" name="tab_rbox">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>61</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>61</width>
-        <height>22</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Tab</string>
-      </property>
-      <attribute name="buttonGroup">
-       <string notr="true">delimiter_grp</string>
-      </attribute>
-     </widget>
-     <widget class="QRadioButton" name="cmm_rbox">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>30</y>
-        <width>71</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>71</width>
-        <height>22</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Comma</string>
-      </property>
-      <attribute name="buttonGroup">
-       <string notr="true">delimiter_grp</string>
-      </attribute>
-     </widget>
-     <widget class="QRadioButton" name="scn_rbox">
-      <property name="geometry">
-       <rect>
-        <x>290</x>
-        <y>30</y>
-        <width>91</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Semicolon</string>
-      </property>
-      <attribute name="buttonGroup">
-       <string notr="true">delimiter_grp</string>
-      </attribute>
-     </widget>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="tab_rbox">
+        <property name="minimumSize">
+         <size>
+          <width>61</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Tab</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">delimiter_grp</string>
+        </attribute>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QRadioButton" name="cmm_rbox">
+        <property name="minimumSize">
+         <size>
+          <width>71</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Comma</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">delimiter_grp</string>
+        </attribute>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QRadioButton" name="scn_rbox">
+        <property name="text">
+         <string>Semicolon</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">delimiter_grp</string>
+        </attribute>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QRadioButton" name="space_rbox">
+        <property name="minimumSize">
+         <size>
+          <width>91</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Space</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">delimiter_grp</string>
+        </attribute>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="6" column="0" colspan="2">

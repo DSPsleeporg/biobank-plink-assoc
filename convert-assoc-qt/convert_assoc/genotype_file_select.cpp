@@ -84,7 +84,11 @@ void Genotype_file_select::on_scn_rbox_clicked()
     _gs_flag.delimiter = ';';
     refresh_preview();
 }
-
+void Genotype_file_select::on_space_rbox_clicked()
+{
+    _gs_flag.delimiter = ' ';
+    refresh_preview();
+}
 
 void Genotype_file_select::on_skip_cbox_stateChanged(int arg1)
 {
@@ -118,4 +122,7 @@ void Genotype_file_select::on_preview_btn_clicked()
     _g_filename = ui->path_txt->text();
     refresh_preview();
 }
+
+
+
 

@@ -31,6 +31,8 @@ private slots:
     void on_queue_btn_clicked();
     void on_preview_btn_clicked();
 
+    void on_space_rbox_clicked();
+
 private:
     Ui::Genotype_file_select *ui;
     void refresh_preview();

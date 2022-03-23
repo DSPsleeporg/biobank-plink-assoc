@@ -120,6 +120,11 @@ void Phenotype_file_select::on_scn_rbtn_clicked()
     _ph_flag_ref.delimiter = ';';
     refresh_preview();
 }
+void Phenotype_file_select::on_space_rbtn_clicked()
+{
+    _ph_flag_ref.delimiter = ' ';
+    refresh_preview();
+}
 
 
 void Phenotype_file_select::on_preview_btn_clicked()
@@ -140,4 +145,6 @@ void Phenotype_file_select::on_ok_btn_clicked()
     phenotype_file_compute.wait();
     close();
 }
+
+
 

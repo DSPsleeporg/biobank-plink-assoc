@@ -74,16 +74,16 @@
       <string>Delimiter</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="2">
-       <widget class="QRadioButton" name="semicolon_rbtn">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="tab_rbtn">
         <property name="minimumSize">
          <size>
-          <width>91</width>
+          <width>43</width>
           <height>22</height>
          </size>
         </property>
         <property name="text">
-         <string>Semicolon</string>
+         <string>Tab</string>
         </property>
         <attribute name="buttonGroup">
          <string notr="true">delimiter_rbtn_grp</string>
@@ -106,8 +106,8 @@
         </attribute>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="tab_rbtn">
+      <item row="0" column="2">
+       <widget class="QRadioButton" name="semicolon_rbtn">
         <property name="minimumSize">
          <size>
           <width>91</width>
@@ -115,7 +115,23 @@
          </size>
         </property>
         <property name="text">
-         <string>Tab</string>
+         <string>Semicolon</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">delimiter_rbtn_grp</string>
+        </attribute>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QRadioButton" name="space_rbtn">
+        <property name="minimumSize">
+         <size>
+          <width>71</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Space</string>
         </property>
         <attribute name="buttonGroup">
          <string notr="true">delimiter_rbtn_grp</string>

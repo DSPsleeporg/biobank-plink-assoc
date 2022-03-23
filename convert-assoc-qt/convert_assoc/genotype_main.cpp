@@ -1,13 +1,65 @@
 #include "genotype_main.h"
+#include "exception_dialog.h"
 #include "ui_genotype_main.h"
-#include <QStandardItemModel>
+
 #include <fstream>
 #include <cstdio>
+
+int Genotype_status_table::rowCount(const QModelIndex &parent) const{
+    return name_status_pair_vec.size();
+}
+int Genotype_status_table::columnCount(const QModelIndex &parent) const{
+    return 2;
+}
+QVariant Genotype_status_table::data(const QModelIndex &index, int role) const{
+    if (role == Qt::DisplayRole){
+        if (index.column()==0){
+            return name_status_pair_vec[index.row()].first;
+        }
+        else{
+            return name_status_pair_vec[index.row()].second;
+        }
+    }
+    return QVariant();
+}
+void Genotype_status_table::clear_table(){
+    name_status_pair_vec.clear();
+}
+void Genotype_status_table::append_row(const std::pair<QString, QString> &row){
+    name_status_pair_vec.push_back(row);
+    return;
+}
 Genotype_main::Genotype_main(const Genotype_file_converter* gfc, QWidget *parent) :
     QDialog(parent),_gfc_ptr(gfc),
     ui(new Ui::Genotype_main)
 {
     ui->setupUi(this);
+}
+Genotype_main::~Genotype_main()
+{
+    delete ui;
+}
+void Genotype_main::file_update_status(const QString& g_filename, const Genotype_file_convert_status& convert_status){
+    bool attempt_finalize = false;
+    file_map_mutex.lock();
+    file_map[g_filename] = convert_status;
+    bool all_success = refresh_table();
+    if (all_success && wait_dialog_ptr != nullptr){
+        attempt_finalize = true;
+    }
+    file_map_mutex.unlock();
+    active_thread_map_mutex.lock();
+    auto thread_gfc_pair = active_thread_map.find(g_filename);
+    if (thread_gfc_pair != active_thread_map.end()){
+        delete thread_gfc_pair->second.second;
+        thread_gfc_pair->second.first->quit();
+        delete thread_gfc_pair->second.first;
+        active_thread_map.erase(thread_gfc_pair);
+    }
+    active_thread_map_mutex.unlock();
+    if (attempt_finalize){
+        finalize();
+    }
 }
 inline QString to_str(const Genotype_file_convert_status gfcs){
     switch (gfcs){
@@ -32,42 +84,23 @@ inline QString to_str(const Genotype_file_convert_status gfcs){
     case Genotype_file_convert_status::size_mismatch_fail:
         return "Fail: subject genome count unequal to genotype map.";
     }
-}
-Genotype_main::~Genotype_main()
-{
-    delete ui;
-}
-void Genotype_main::file_update_status(const QString& g_filename, const Genotype_file_convert_status convert_status){
-    bool attempt_finalize = false;
-    file_map_mutex.lock();
-    file_map[g_filename] = convert_status;
-    bool all_success = refresh_table();
-    if (all_success && wait_dialog_ptr){
-        attempt_finalize = true;
-    }
-    file_map_mutex.unlock();
-    if (attempt_finalize){
-        finalize();
-    }
+    return "Fail: undefined";
 }
 bool Genotype_main::refresh_table(){
-    QStandardItemModel model;
+    //Private method that does not lock file_map. Not concurrent safe.
     bool all_finish = true;
-    model.setHorizontalHeaderLabels({"Filename","Status"});
-    QList<QStandardItem *> items;
-    for (const auto& file_status_pair : file_map){
-        items.clear();
-        items.append(new QStandardItem(file_status_pair.first));
-        items.append(new QStandardItem(to_str(file_status_pair.second)));
-        if (file_status_pair.second == Genotype_file_convert_status::in_progress){
+    genotype_status_table.clear_table();
+    for (const auto& name_status : file_map){
+        genotype_status_table.append_row(std::make_pair(name_status.first,to_str(name_status.second)));
+        if (name_status.second == Genotype_file_convert_status::in_progress){
             all_finish = false;
         }
-        model.appendRow(items);
     }
     //Set display:
-    ui->gm_tbl->setModel(&model);
-    ui->gm_tbl->verticalHeader()->hide();
-    ui->gm_tbl->horizontalHeader()->setStretchLastSection(true);
+    ui->gm_tbl->setModel(&genotype_status_table);
+    ui->gm_tbl->setColumnWidth(0,200);
+    ui->gm_tbl->setColumnWidth(1,100);
+    ui->gm_tbl->show();
     return all_finish;
 }
 void Genotype_main::finalize(){
@@ -98,16 +131,16 @@ void Genotype_main::finalize(){
 void Genotype_main::on_gm_ok_btn_clicked()
 {
     //Create wait dialog, attempt to finalize.
-    bool attempt_finalize = false;
-    file_map_mutex.lock();
     wait_dialog_ptr = new Info_dialog("Finishing file conversion...");
     connect(this,&Genotype_main::all_load_finished,wait_dialog_ptr,&Info_dialog::close_panel);
-    if (refresh_table()){
-        attempt_finalize = true;
-    }
+    file_map_mutex.lock();
+    bool attempt_finalize = refresh_table();
     file_map_mutex.unlock();
     if (attempt_finalize){
         finalize();
+    }
+    else{
+        wait_dialog_ptr->exec();
     }
 }
 Genotype_file_compute::Genotype_file_compute(const Genotype_file_converter* _gfc_ptr, const QString& _g_filename, const Genotype_subject_flags& _gs_flag, QObject* parent):
@@ -123,10 +156,27 @@ void Genotype_main::on_gm_add_btn_clicked()
     Genotype_subject_flags gs_f;
     Genotype_file_select gfs(g_filename,gs_f);
     gfs.exec();
+    //Check for repeated files:
+    bool file_exists;
+    file_map_mutex.lock();
+    file_exists = file_map.count(g_filename) > 0;
+    file_map_mutex.unlock();
+    if (file_exists){
+        show_exception_dialogue("Repeated file");
+        return;
+    }
     file_update_status(g_filename,Genotype_file_convert_status::in_progress);
-    Genotype_file_compute gfc(_gfc_ptr,g_filename,gs_f);
-    gfc.moveToThread(&_compute_thread);
-    connect(&gfc,&Genotype_file_compute::genotype_file_finished,this,&Genotype_main::file_update_status);
-    gfc.start();
+
+
+
+
+    QThread* compute_thread = new QThread;
+    Genotype_file_compute* gfc = new Genotype_file_compute(_gfc_ptr,g_filename,gs_f);
+    gfc->moveToThread(compute_thread);
+    connect(gfc,&Genotype_file_compute::genotype_file_finished,this,&Genotype_main::file_update_status);
+    active_thread_map_mutex.lock();
+    active_thread_map[g_filename] = std::make_pair(compute_thread,gfc);
+    active_thread_map_mutex.unlock();
+    gfc->start();
 }
 
