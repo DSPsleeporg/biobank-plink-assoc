@@ -27,6 +27,8 @@ void Genotype_status_table::clear_table(){
 }
 void Genotype_status_table::append_row(const std::pair<QString, QString> &row){
     name_status_pair_vec.push_back(row);
+    const int N = name_status_pair_vec.size();
+    emit layoutChanged();
     return;
 }
 Genotype_main::Genotype_main(const Genotype_file_converter* gfc, QWidget *parent) :
@@ -218,6 +220,7 @@ void Genotype_main::on_gm_add_btn_clicked()
     connect(gfc,&Genotype_file_compute::genotype_file_finished,this,&Genotype_main::file_update_status);
     active_thread_map_mutex.lock();
     active_thread_map[g_filename] = std::make_pair(compute_thread,gfc);
+    refresh_table();
     active_thread_map_mutex.unlock();
     gfc->start();
 }
