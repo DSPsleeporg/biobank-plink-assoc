@@ -141,7 +141,7 @@ TEST(Genotype_proxy_parse, Genotype_proxy_line_parse) {
     gp_flag.SNP_idx = 1;
     gp_flag.chromosome_idx = 2;
     gp_flag.base_start_idx = 4;
-    gp_line = "80278591\t10\t0\t\"GAC G\"\t\"0 0\"\t\"G GAC\"\t\"\"";
+    gp_line = "80278591\t10\t0\t\"GAC G\"\t\"0 0\"\t\"G GAC\"\t\"\"\n";
     auto parse_result = Genotype_line_parser::parse_line_for_original(gp_flag,gp_line);
     auto proxy_parse_result = Genotype_line_parser::parse_line_for_proxy(gp_flag,gp_line);
     auto chromosome_result = Genotype_line_parser::parse_chromosome(gp_flag, gp_line);
@@ -223,6 +223,18 @@ TEST(Genotype_proxy_parse, Genotype_proxy_file_parse) {
     EXPECT_EQ(genotype_proxy_map.get_proxy_allele(317, 1).second, "1 2");//GA
     EXPECT_EQ(genotype_proxy_map.get_proxy_allele(317, 2).second, "1 1");//G G
     EXPECT_EQ(genotype_proxy_map.get_proxy_allele(317, 3).first, false);//_, CANNOT be read as this index should not exist.
+}
+TEST(Genotype_proxy_parse, Genotype_proxy_large_file_parse) {
+    Genotype_proxy_flags gp_flag;
+
+    const std::string map_filename = "gene_dic.dat";
+    gp_flag.skip_first_row = false;
+    gp_flag.delimiter = '\t';
+    gp_flag.SNP_idx = 1;
+    gp_flag.chromosome_idx = 2;
+    gp_flag.base_start_idx = 4;
+    Genotype_proxy_map genotype_proxy_map;
+    EXPECT_TRUE(genotype_proxy_map.read_map(map_filename, gp_flag));
 }
 TEST(Genotype_proxy_parse, Genotype_proxy_file_print) {
     Genotype_proxy_flags gp_flag;
