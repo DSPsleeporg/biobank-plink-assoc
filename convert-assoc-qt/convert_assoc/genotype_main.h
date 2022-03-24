@@ -15,6 +15,16 @@
 namespace Ui {
 class Genotype_main;
 }
+class File_combine : public QThread{
+    Q_OBJECT
+    std::unordered_map<QString,Genotype_file_convert_status>& file_map;
+public:
+    File_combine(std::unordered_map<QString,Genotype_file_convert_status>& file_map, QObject* parent = nullptr);
+    void run() override;
+signals:
+    void combine_finished();
+};
+
 class Genotype_file_compute : public QThread{
     Q_OBJECT
     const Genotype_file_converter* _gfc_ptr;

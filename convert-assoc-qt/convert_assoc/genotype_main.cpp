@@ -103,10 +103,9 @@ bool Genotype_main::refresh_table(){
     ui->gm_tbl->show();
     return all_finish;
 }
-void Genotype_main::finalize(){
-    //Finalize by combining all temp files, close dialogs...
-    //Finzalize only occurs when OK is clicked, and wait_dialog created:
-    emit all_load_finished();
+File_combine::File_combine(std::unordered_map<QString,Genotype_file_convert_status>& file_map, QObject* parent):
+    QThread(parent),file_map(file_map){}
+void File_combine::run(){
     FILE* out_fptr = fopen("proxy.ped","wb");
     if (!out_fptr){
         return;
@@ -152,7 +151,23 @@ void Genotype_main::finalize(){
     }
     delete[] read_buffer;
     fclose(out_fptr);
-    //delete[] write_buffer;
+    emit combine_finished();
+}
+void Genotype_main::finalize(){
+    //Finalize by combining all temp files, close dialogs...
+    //Finzalize only occurs when OK is clicked, and wait_dialog created:
+    emit all_load_finished();
+    QThread combine_thread;
+    File_combine file_combine(file_map);
+    file_combine.moveToThread(&combine_thread);
+    if (wait_dialog_ptr){
+        delete wait_dialog_ptr;
+    }
+    wait_dialog_ptr = new Info_dialog("Combining TMP files...");
+    connect(&file_combine,&File_combine::combine_finished,wait_dialog_ptr,&Info_dialog::close_panel);
+    file_combine.start();
+    wait_dialog_ptr->exec();
+    file_combine.wait();
     close();
 }
 void Genotype_main::on_gm_ok_btn_clicked()
