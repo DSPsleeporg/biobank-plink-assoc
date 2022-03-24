@@ -107,6 +107,11 @@ void Genotype_main::finalize(){
     //Finalize by combining all temp files, close dialogs...
     //Finzalize only occurs when OK is clicked, and wait_dialog created:
     emit all_load_finished();
+    FILE* out_fptr = fopen("proxy.ped","wb");
+    if (!out_fptr){
+        return;
+    }
+    /*
     std::fstream ofs;
     ofs.open("proxy.ped",std::ios_base::out | std::ios_base::binary);
     if (!ofs.is_open()){
@@ -114,18 +119,40 @@ void Genotype_main::finalize(){
         close();
         return;
     }
+    */
+    constexpr int buffer_size = 16777216;
+    //std::ios::sync_with_stdio(false);
+    char* read_buffer = new char[buffer_size];
+    //char* write_buffer = new char[buffer_size];
+    //ofs.rdbuf()->pubsetbuf(write_buffer,buffer_size);
     for (const auto& file_status_pair: file_map){
         const std::string tmp_filename = file_status_pair.first.toStdString()+".TMP";
         if (file_status_pair.second != Genotype_file_convert_status::success){
             std::remove(tmp_filename.c_str());
             continue;
         }
+        FILE* in_fptr = fopen(tmp_filename.c_str(),"rb");
+        if (!in_fptr){
+            continue;
+        }
+        int read_size = 0;
+        while ((read_size = fread(read_buffer,1,buffer_size,in_fptr)) == buffer_size){
+            fwrite(read_buffer,1,read_size,out_fptr);
+        }
+        fwrite(read_buffer,1,read_size,out_fptr);
+        fclose(in_fptr);
+        /*
         std::fstream ifs;
+        ifs.rdbuf()->pubsetbuf(read_buffer,buffer_size);
         ifs.open(file_status_pair.first.toStdString()+".TMP",std::ios_base::in|std::ios_base::binary);
         ofs << ifs.rdbuf();
         ifs.close();
+        */
         std::remove(tmp_filename.c_str());
     }
+    delete[] read_buffer;
+    fclose(out_fptr);
+    //delete[] write_buffer;
     close();
 }
 void Genotype_main::on_gm_ok_btn_clicked()
