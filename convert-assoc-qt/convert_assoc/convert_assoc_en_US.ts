@@ -23,7 +23,7 @@
     <name>Genotype_file_select</name>
     <message>
         <location filename="genotype_file_select.ui" line="14"/>
-        <source>Dialog</source>
+        <source>Genotype file select</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -96,7 +96,7 @@
     <name>Genotype_main</name>
     <message>
         <location filename="genotype_main.ui" line="14"/>
-        <source>Dialog</source>
+        <source>Genotype files status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

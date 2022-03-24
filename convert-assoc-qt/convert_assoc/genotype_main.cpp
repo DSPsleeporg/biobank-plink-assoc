@@ -27,7 +27,6 @@ void Genotype_status_table::clear_table(){
 }
 void Genotype_status_table::append_row(const std::pair<QString, QString> &row){
     name_status_pair_vec.push_back(row);
-    const int N = name_status_pair_vec.size();
     emit layoutChanged();
     return;
 }
