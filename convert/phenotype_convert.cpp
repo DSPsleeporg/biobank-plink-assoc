@@ -18,7 +18,7 @@ std::pair<int,int> Line_parser::find_idx_range(const std::string& line, const in
     int count = 0;
     //Read in current field:
     for (;i<N;i++){
-        if (line[i] == delimiter){
+        if (line[i] == delimiter || line[i] == '\n') {
             break;
         }
         else{
