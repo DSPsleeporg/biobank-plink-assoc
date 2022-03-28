@@ -17,7 +17,7 @@ Genotype_file_select::~Genotype_file_select()
     delete ui;
 }
 enum class Genotype_text_state{plain,UID,geno};
-Genotype_text_state find_state_at_index(const int idx, const std::pair<int,int> UID_range, const std::pair<int,int> geno_range){
+Genotype_text_state find_genotype_state_at_index(const int idx, const std::pair<int,int> UID_range, const std::pair<int,int> geno_range){
     if (idx >= UID_range.first && idx < UID_range.first + UID_range.second){
         return Genotype_text_state::UID;
     }
@@ -48,7 +48,7 @@ void Genotype_file_select::refresh_preview_highlight(const QString &line){
     const auto geno_range = Genotype_subject_line_parser::find_genotype_idx_range(_gs_flag,line.toStdString());
     const int N = line.size();
     for (int i=0; i < N; i++){
-        switch (find_state_at_index(i,UID_range,geno_range)) {
+        switch (find_genotype_state_at_index(i,UID_range,geno_range)) {
         case Genotype_text_state::UID:
             ui->preview_txt->setTextBackgroundColor(Qt::gray);
             ui->preview_txt->setTextColor(Qt::cyan);

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(convert_assoc VERSION 0.1 LANGUAGES CXX)
+project(convert_assoc VERSION 0.1 LANGUAGES C CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

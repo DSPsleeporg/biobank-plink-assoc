@@ -140,10 +140,10 @@ typedef SSIZE_T ssize_t;
 
 #ifdef _WIN64
   #define __LP64__
-  #define CTZLU _tzcnt_u64
-  #define CLZLU _lzcnt_u64
-  #define __builtin_ctz _tzcnt_u32
-  #define __builtin_clz _lzcnt_u32
+  #define CTZLU __builtin_ctzll
+  #define CLZLU __builtin_clzll
+  #define __builtin_ctz __builtin_ctzl
+  #define __builtin_clz __builtin_clzl
 #else
   #define CTZLU __builtin_ctzl
   #define CLZLU __builtin_clzl
@@ -261,6 +261,7 @@ typedef SSIZE_T ssize_t;
 #define VEC_BYTES_M1 (VEC_BYTES - 1)
 #define VEC_BITS (VEC_BYTES * 8)
 #define VEC_BITS_M1 (VEC_BITS - 1)
+
 #ifdef DYNAMIC_ZLIB
   #include <zlib.h>
   #if !defined(ZLIB_VERNUM) || ZLIB_VERNUM < 0x1240

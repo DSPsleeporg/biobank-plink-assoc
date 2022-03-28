@@ -38,7 +38,7 @@
 #include "plink_dosage.h"
 #include "plink_family.h"
 #include "plink_filter.h"
-#include "plink_glm.h"
+//#include "plink_glm.h"
 #include "plink_help.h"
 #include "plink_homozyg.h"
 #include "plink_lasso.h"
@@ -96,7 +96,7 @@
 
 static const char ver_str[] =
 #ifdef STABLE_BUILD
-  "PLINK v1.90b6.26"
+  "PLINK v1.90b6.24"
 #else
   "PLINK v1.90p"
 #endif
@@ -108,7 +108,7 @@ static const char ver_str[] =
 #else
   " 32-bit"
 #endif
-  " (16 Mar 2022)";
+  " (24 Feb 2022)";
 static const char ver_str2[] =
   // include leading space if day < 10, so character length stays the same
   ""
@@ -10551,7 +10551,7 @@ int32_t main(int32_t argc, char** argv) {
 	    if (recode_type_set(&recode_modifier, RECODE_A)) {
 	      goto main_ret_INVALID_CMDLINE_A;
 	    }
-          } else if ((tolower(argv[cur_arg + uii][0]) == 'a') && ((!strcmp(&(argv[cur_arg + uii][1]), "-transpose")) || (!strcmp(&(argv[cur_arg + uii][1]), "v")))) {
+          } else if ((tolower(argv[cur_arg + uii][0]) == 'a') && (!strcmp(&(argv[cur_arg + uii][1]), "-transpose"))) {
 	    if (recode_type_set(&recode_modifier, RECODE_A_TRANSPOSE)) {
 	      goto main_ret_INVALID_CMDLINE_A;
 	    }
@@ -10647,7 +10647,7 @@ int32_t main(int32_t argc, char** argv) {
 	    if (recode_type_set(&recode_modifier, RECODE_STRUCTURE)) {
 	      goto main_ret_INVALID_CMDLINE_A;
 	    }
-	  } else if ((!strcmp(argv[cur_arg + uii], "transpose")) || (!strcmp(argv[cur_arg + uii], "tped"))) {
+	  } else if (!strcmp(argv[cur_arg + uii], "transpose")) {
 	    if (recode_type_set(&recode_modifier, RECODE_TRANSPOSE)) {
 	      goto main_ret_INVALID_CMDLINE_A;
 	    }

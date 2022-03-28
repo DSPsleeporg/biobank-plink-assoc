@@ -452,5 +452,7 @@ test-vsproj/proxy.map
 test-vsproj/proxy_large.map
 test-vsproj/proxy_large.ped
 plink-vsproj
+plink_1.9/build
+plink_1.9/linux_build
 zlib-1.2.11/zconf.h
 zlib-1.2.11/zconf.h.included

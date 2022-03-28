@@ -11,10 +11,6 @@
 #define RET_WRITE_FAIL 4
 #define RET_INVALID_CMDLINE 5
 #define RET_INVALID_FORMAT 6
-#ifdef _WIN32
-#define fseeko _fseeki64
-#define ftello _ftelli64
-#endif
 
 static const char digit2_table[] = {
   "0001020304050607080910111213141516171819"

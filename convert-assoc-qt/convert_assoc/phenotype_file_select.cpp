@@ -47,7 +47,7 @@ void Phenotype_file_select::refresh_preview(){
     refresh_preview_highlight(line);
 }
 enum class Phenotype_text_state{plain,UID,pheno};
-Phenotype_text_state find_state_at_index(const int idx, const std::pair<int,int> UID_range, const std::pair<int,int> pheno_range){
+Phenotype_text_state find_phenotype_state_at_index(const int idx, const std::pair<int,int> UID_range, const std::pair<int,int> pheno_range){
     if (idx >= UID_range.first && idx < UID_range.first + UID_range.second){
         return Phenotype_text_state::UID;
     }
@@ -63,7 +63,7 @@ void Phenotype_file_select::refresh_preview_highlight(const QString &line){
     const auto pheno_range = Phenotype_line_parser::find_phenotype_idx_range(_ph_flag_ref,line.toStdString());
     const int N = line.size();
     for (int i=0; i < N; i++){
-        switch (find_state_at_index(i,UID_range,pheno_range)) {
+        switch (find_phenotype_state_at_index(i,UID_range,pheno_range)) {
         case Phenotype_text_state::UID:
             ui->preview_txt->setTextBackgroundColor(Qt::gray);
             ui->preview_txt->setTextColor(Qt::cyan);

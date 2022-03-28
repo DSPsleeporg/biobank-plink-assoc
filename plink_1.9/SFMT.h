@@ -14,33 +14,8 @@
  * University and The University of Tokyo.
  * All rights reserved.
  *
- * The 3-clause BSD License is applied to this software:
- *
- * * * * * *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * - Redistributions of source code must retain the above copyright notice,
- *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
- * - Neither the names of Hiroshima University, The University of Tokyo nor the
- *   names of its contributors may be used to endorse or promote products
- *   derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- * * * * * *
+ * The 3-clause BSD License is applied to this software, see
+ * LICENSE.txt
  *
  * @note We assume that your system has inttypes.h.  If your system
  * doesn't have inttypes.h, you have to typedef uint32_t and uint64_t,
@@ -68,9 +43,8 @@ extern "C" {
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
   #include <inttypes.h>
-#elif defined(__BORLANDC__)
-  typedef unsigned int uint32_t;
-  typedef unsigned __int64 uint64_t;
+#elif defined(_MSC_VER) || defined(__BORLANDC__)
+#include <stdint.h>
   #define inline __inline
 #else
   #include <inttypes.h>
@@ -89,48 +63,37 @@ extern "C" {
   #endif
 #endif
 
-
-  // fold in SFMT-params.h, etc. to reduce compilation time a bit
-#if !defined(SFMT_MEXP)
-  #define SFMT_MEXP 19937
-#endif
-/*-----------------
-  BASIC DEFINITIONS
-  -----------------*/
-/** Mersenne Exponent. The period of the sequence
- *  is a multiple of 2^MEXP-1.
- * #define SFMT_MEXP 19937 */
-/** SFMT generator has an internal state array of 128-bit integers,
- * and N is its size. */
-#define SFMT_N (SFMT_MEXP / 128 + 1)
-/** N32 is the size of internal state array when regarded as an array
- * of 32-bit integers.*/
-#define SFMT_N32 (SFMT_N * 4)
-/** N64 is the size of internal state array when regarded as an array
- * of 64-bit integers.*/
-#define SFMT_N64 (SFMT_N * 2)
-#define SFMT_POS1	122
-#define SFMT_SL1	18
-#define SFMT_SL2	1
-#define SFMT_SR1	11
-#define SFMT_SR2	1
-#define SFMT_MSK1	0xdfffffefU
-#define SFMT_MSK2	0xddfecb7fU
-#define SFMT_MSK3	0xbffaffffU
-#define SFMT_MSK4	0xbffffff6U
-#define SFMT_PARITY1	0x00000001U
-#define SFMT_PARITY2	0x00000000U
-#define SFMT_PARITY3	0x00000000U
-#define SFMT_PARITY4	0x13c9e684U
-#define SFMT_IDSTR	"SFMT-19937:122-18-1-11-1:dfffffef-ddfecb7f-bffaffff-bffffff6"
-
+#include "SFMT-params.h"
 
 /*------------------------------------------
   128-bit SIMD like data type for standard C
   ------------------------------------------*/
-#ifdef __LP64__
-#include <emmintrin.h>
+#if defined(HAVE_ALTIVEC)
+  #if !defined(__APPLE__)
+    #include <altivec.h>
+  #endif
+/** 128-bit data structure */
+union W128_T {
+    vector unsigned int s;
+    uint32_t u[4];
+    uint64_t u64[2];
+};
+#elif defined(HAVE_NEON)
+  #include <arm_neon.h>
 
+/** 128-bit data structure */
+union W128_T {
+    uint32_t u[4];
+    uint64_t u64[2];
+    uint32x4_t si;
+};
+//#elif defined(HAVE_SSE2)
+#elif defined(HAVE_SSE2)
+  #if defined(__AVX2__)
+    #include <immintrin.h>
+  #else 
+    #include <emmintrin.h>
+  #endif
 
 /** 128-bit data structure */
 union W128_T {
@@ -153,8 +116,18 @@ typedef union W128_T w128_t;
  * SFMT internal state
  */
 struct SFMT_T {
+#if defined(__AVX2__)
+    union {
+        w128_t state[SFMT_N];
+        __m256i state_ymm[SFMT_N/2];
+    #if defined(__AVX512VL__)
+        __m512i state_zmm[SFMT_N/4];
+    #endif
+    };
+#else
     /** the 128-bit internal state array */
     w128_t state[SFMT_N];
+#endif
     /** index counter to the 32-bit internal state array */
     int idx;
 };
@@ -170,6 +143,7 @@ int sfmt_get_min_array_size32(sfmt_t * sfmt);
 int sfmt_get_min_array_size64(sfmt_t * sfmt);
 void sfmt_gen_rand_all(sfmt_t * sfmt);
 
+#ifndef ONLY64
 /**
  * This function generates and returns 32-bit pseudorandom number.
  * init_gen_rand or init_by_array must be called before this function.
@@ -181,12 +155,13 @@ inline static uint32_t sfmt_genrand_uint32(sfmt_t * sfmt) {
     uint32_t * psfmt32 = &sfmt->state[0].u[0];
 
     if (sfmt->idx >= SFMT_N32) {
-	sfmt_gen_rand_all(sfmt);
-	sfmt->idx = 0;
+        sfmt_gen_rand_all(sfmt);
+        sfmt->idx = 0;
     }
     r = psfmt32[sfmt->idx++];
     return r;
 }
+#endif
 /**
  * This function generates and returns 64-bit pseudorandom number.
  * init_gen_rand or init_by_array must be called before this function.
@@ -196,17 +171,29 @@ inline static uint32_t sfmt_genrand_uint32(sfmt_t * sfmt) {
  * @return 64-bit pseudorandom number
  */
 inline static uint64_t sfmt_genrand_uint64(sfmt_t * sfmt) {
+#if defined(BIG_ENDIAN64) && !defined(ONLY64)
+    uint32_t * psfmt32 = &sfmt->state[0].u[0];
+    uint32_t r1, r2;
+#else
     uint64_t r;
+#endif
     uint64_t * psfmt64 = &sfmt->state[0].u64[0];
     assert(sfmt->idx % 2 == 0);
 
     if (sfmt->idx >= SFMT_N32) {
-	sfmt_gen_rand_all(sfmt);
-	sfmt->idx = 0;
+        sfmt_gen_rand_all(sfmt);
+        sfmt->idx = 0;
     }
+#if defined(BIG_ENDIAN64) && !defined(ONLY64)
+    r1 = psfmt32[sfmt->idx];
+    r2 = psfmt32[sfmt->idx + 1];
+    sfmt->idx += 2;
+    return ((uint64_t)r2 << 32) | r1;
+#else
     r = psfmt64[sfmt->idx / 2];
     sfmt->idx += 2;
     return r;
+#endif
 }
 
 /* =================================================
@@ -276,14 +263,14 @@ inline static double sfmt_genrand_real3(sfmt_t * sfmt)
 }
 
 /**
- * converts an unsigned 32-bit integer to double on [0,1)
+ * converts an unsigned 64-bit integer to double on [0,1)
  * with 53-bit resolution.
- * @param v 32-bit unsigned integer
+ * @param v 64-bit unsigned integer
  * @return double on [0,1)-real-interval with 53-bit resolution.
  */
 inline static double sfmt_to_res53(uint64_t v)
 {
-    return v * (1.0/18446744073709551616.0L);
+    return (v >> 11) * (1.0/9007199254740992.0);
 }
 
 /**

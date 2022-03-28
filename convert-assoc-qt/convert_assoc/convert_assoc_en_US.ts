@@ -115,22 +115,6 @@
     <message>
         <location filename="genotype_map_select.ui" line="14"/>
         <source>Genotype map select</source>
-        <oldsource>Genotype_map_select</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="genotype_map_select.ui" line="147"/>
-        <source>Genotype map path:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="genotype_map_select.ui" line="177"/>
-        <source>/path/to/dictionary/</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="genotype_map_select.ui" line="41"/>
-        <source>Preview of parse result</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -146,7 +130,16 @@
     <message>
         <location filename="genotype_map_select.ui" line="34"/>
         <source>SNP (cyan)</source>
-        <oldsource>UID (cyan)</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_map_select.ui" line="41"/>
+        <source>Preview of parse result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_map_select.ui" line="61"/>
+        <source>Base pair (blue)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -160,16 +153,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_map_select.ui" line="134"/>
-        <source>Space</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="genotype_map_select.ui" line="191"/>
-        <source>Skip first line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="genotype_map_select.ui" line="102"/>
         <source>Comma</source>
         <translation type="unfinished"></translation>
@@ -180,15 +163,28 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_map_select.ui" line="184"/>
-        <source>Chromosome (magenta)</source>
-        <oldsource>Chromosome</oldsource>
+        <location filename="genotype_map_select.ui" line="134"/>
+        <source>Space</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="genotype_map_select.ui" line="61"/>
-        <source>Base pair (blue)</source>
-        <oldsource>Base pair</oldsource>
+        <location filename="genotype_map_select.ui" line="147"/>
+        <source>Genotype map path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_map_select.ui" line="177"/>
+        <source>/path/to/dictionary/</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_map_select.ui" line="184"/>
+        <source>Chromosome (magenta)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="genotype_map_select.ui" line="191"/>
+        <source>Skip first line</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

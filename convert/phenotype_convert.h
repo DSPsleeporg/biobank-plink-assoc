@@ -17,6 +17,8 @@
 #include <ostream>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
+#include <cstring>
 #include <string>
 #include <utility>
 enum class Phenotype_status{empty,bisect_wait,ready,spoiled};

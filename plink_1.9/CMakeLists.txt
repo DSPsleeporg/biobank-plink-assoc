@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(plink VERSION 1.9 LANGUAGES C CXX)
+project(plink VERSION 1.9 LANGUAGES C)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -88,10 +88,15 @@ set(PLINK_HEADERS
     sisocks.h
     yarn.h
 )
+if (UNIX)
+set(OS_SPECIFIC_LIB m pthread)
+else ()
+set(OS_SPECIFIC_LIB)
+endif()
 list(TRANSFORM PLINK_SOURCES PREPEND ${PLINK_SOURCE_DIR}/)
 list(TRANSFORM PLINK_HEADERS PREPEND ${PLINK_SOURCE_DIR}/)
 message(STATUS "PLINK_SOURCES: ${PLINK_SOURCES}")
 add_executable(plink ${PLINK_SOURCES} ${PLINK_HEADERS})
 target_include_directories(plink PUBLIC ${ZLIB_SOURCE_DIR})
-target_link_libraries(plink zlibstatic)
+target_link_libraries(plink zlibstatic ${OS_SPECIFIC_LIB})
 

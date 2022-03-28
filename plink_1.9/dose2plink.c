@@ -22,9 +22,7 @@
 #include <inttypes.h>
 #include <math.h>
 #include <locale.h>
-#ifndef _WIN32
 #include <unistd.h>
-#endif
 
 #ifdef _WIN32
   #ifndef _WIN64

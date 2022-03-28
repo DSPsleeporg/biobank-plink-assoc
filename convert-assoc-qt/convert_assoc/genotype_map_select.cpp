@@ -60,7 +60,7 @@ void Genotype_map_select::refresh_preview(){
     refresh_preview_highlight(line);
 }
 enum class Proxy_text_state{plain,SNP,chro,base};
-Proxy_text_state find_state_at_index(const int idx, const std::pair<int,int>& SNP_range, const std::pair<int,int>& chromosome_range, const std::pair<int,int>& base_range){
+Proxy_text_state find_proxy_state_at_index(const int idx, const std::pair<int,int>& SNP_range, const std::pair<int,int>& chromosome_range, const std::pair<int,int>& base_range){
     if (idx >= SNP_range.first && idx < SNP_range.first + SNP_range.second){
         return Proxy_text_state::SNP;
     }
@@ -83,7 +83,7 @@ void Genotype_map_select::refresh_preview_highlight(const QString& line){
     const std::pair<int,int> base_range = std::make_pair(base_1_range.first,base_4_range.first - base_1_range.first + base_4_range.second);
     const int N = line.size();
     for (int i=0; i < N; i++){
-        switch (find_state_at_index(i,SNP_range,chromosome_range,base_range)) {
+        switch (find_proxy_state_at_index(i,SNP_range,chromosome_range,base_range)) {
         case Proxy_text_state::SNP:
             ui->gmap_preview_txt->setTextBackgroundColor(Qt::gray);
             ui->gmap_preview_txt->setTextColor(Qt::cyan);
