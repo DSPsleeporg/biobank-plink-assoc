@@ -261,7 +261,6 @@ typedef SSIZE_T ssize_t;
 #define VEC_BYTES_M1 (VEC_BYTES - 1)
 #define VEC_BITS (VEC_BYTES * 8)
 #define VEC_BITS_M1 (VEC_BITS - 1)
-
 #ifdef DYNAMIC_ZLIB
   #include <zlib.h>
   #if !defined(ZLIB_VERNUM) || ZLIB_VERNUM < 0x1240

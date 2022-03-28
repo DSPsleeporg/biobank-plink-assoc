@@ -10,40 +10,52 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
+set(REPO_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+set(PLINK_SOURCE_DIR ${REPO_ROOT_DIR}/plink_1.9)
+set(PLINK_BINARY_DIR ${PLINK_SOURCE_DIR}/build)
+set(CONVERT_SOURCE_DIR ${REPO_ROOT_DIR}/convert)
+set(TEST_SOURCE_DIR ${REPO_ROOT_DIR}/test-vsproj)
+set(GUI_SOURCE_DIR ${REPO_ROOT_DIR}/convert-assoc-qt/convert_assoc)
 find_package(QT NAMES Qt6 COMPONENTS Widgets LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
-
+add_subdirectory(${PLINK_SOURCE_DIR} ${PLINK_BINARY_DIR})
 set(TS_FILES convert_assoc_en_US.ts)
-
+set(GUI_SOURCES
+    main.cpp
+    genotype_map_select.cpp
+    phenotype_select.cpp
+    phenotype_file_select.cpp
+    genotype_file_select.cpp
+    exception_dialog.cpp
+    info_dialog.cpp
+    genotype_main.cpp
+    genotype_map_select.h
+    phenotype_select.h
+    phenotype_file_select.h
+    genotype_file_select.h
+    exception_dialog.h
+    info_dialog.h
+    genotype_main.h
+    genotype_map_select.ui
+    phenotype_select.ui
+    phenotype_file_select.ui
+    genotype_file_select.ui
+    exception_dialog.ui
+    info_dialog.ui
+    genotype_main.ui
+)
+list(TRANSFORM GUI_SOURCES PREPEND ${GUI_SOURCE_DIR}/)
+set(CONVERT_SOURCES
+    genotype_convert.cpp
+    phenotype_convert.cpp
+    genotype_convert.h
+    phenotype_convert.h
+)
+list(TRANSFORM CONVERT_SOURCES PREPEND ${CONVERT_SOURCE_DIR}/)
 set(PROJECT_SOURCES
-        main.cpp
-        ../../convert/genotype_convert.cpp
-        ../../convert/phenotype_convert.cpp
-        genotype_map_select.cpp
-        phenotype_select.cpp
-        phenotype_file_select.cpp
-        genotype_file_select.cpp
-        exception_dialog.cpp
-        info_dialog.cpp
-        genotype_main.cpp
-        ../../convert/genotype_convert.h
-        ../../convert/phenotype_convert.h
-        genotype_map_select.h
-        phenotype_select.h
-        phenotype_file_select.h
-        genotype_file_select.h
-        exception_dialog.h
-        info_dialog.h
-        genotype_main.h
-        genotype_map_select.ui
-        phenotype_select.ui
-        phenotype_file_select.ui
-        genotype_file_select.ui
-        exception_dialog.ui
-        info_dialog.ui
-        genotype_main.ui
-        ${TS_FILES}
+    ${GUI_SOURCES}
+    ${CONVERT_SOURCES}
+    ${TS_FILES}
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

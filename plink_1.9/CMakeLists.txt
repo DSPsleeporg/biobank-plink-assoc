@@ -13,7 +13,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #Using NOLAPACK macro in plink_common.h
 #find_package(LAPACK BLAS REQUIRED)
 #find_package(ZLIB REQUIRED)
-include(${CMAKE_CURRENT_SOURCE_DIR}/zlib.cmake)
+message(STATUS "CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
+set(REPO_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+if (NOT DEFINED ${ZLIB_SOURCE_DIR})
+    set(ZLIB_SOURCE_DIR ${REPO_ROOT_DIR}/zlib-1.2.11)
+endif()
+message(STATUS "ZLIB_SOURCE_DIR: ${ZLIB_SOURCE_DIR}")
+set(ZLIB_BIN_DIR ${ZLIB_SOURCE_DIR}/bin)
+add_subdirectory(${ZLIB_SOURCE_DIR} ${ZLIB_BIN_DIR})
+set(PLINK_SOURCE_DIR ${REPO_ROOT_DIR}/plink_1.9)
 set(PLINK_SOURCES 
 bgzf.c
 dcdflib.c
@@ -80,15 +88,10 @@ set(PLINK_HEADERS
     sisocks.h
     yarn.h
 )
+list(TRANSFORM PLINK_SOURCES PREPEND ${PLINK_SOURCE_DIR}/)
+list(TRANSFORM PLINK_HEADERS PREPEND ${PLINK_SOURCE_DIR}/)
+message(STATUS "PLINK_SOURCES: ${PLINK_SOURCES}")
 add_executable(plink ${PLINK_SOURCES} ${PLINK_HEADERS})
-#include_directories(
-#${LAPACK_INCLUDE_DIRS} 
-#${ZLIB_INCLUDE_DIRS} 
-#${BLAS_INCLUDE_DIRS}
-#)
-target_link_directories(plink PUBLIC
-m dl
-#${LAPACK_LIBRARIES}
-zlib
-#${BLAS_LIBRARIES}
-)
+target_include_directories(plink PUBLIC ${ZLIB_SOURCE_DIR})
+target_link_libraries(plink zlibstatic)
+
