@@ -34,7 +34,27 @@ void Plink_monitor::execute_args(const QStringList &args){
 void Plink_monitor::refresh_output_from_proc(){
     QString str_raw = plink_proc->readAllStandardOutput();
     QStringList str_backspace_list = str_raw.split('\b');
-    ui->out_txt->setText(str_backspace_list.back());
+    if (str_backspace_list.back().size()> 10){
+        //If the new line is longer than 9 chars: use this line by itself.
+        ui->out_txt->setText(str_backspace_list.back());
+    }
+    else{
+        //Retain the information from previous time,
+        // except for the last line if this line is shorter than 10 chars.
+        QString old_txt = ui->out_txt->toPlainText();
+        QStringList old_txt_list = old_txt.split('\n');
+        if (old_txt_list.back().size()<= 10){
+            old_txt_list.pop_back();
+        }
+        QString new_txt;
+        for (QString& line : old_txt_list){
+            new_txt.append(line);
+            new_txt.append('\n');
+        }
+        new_txt.append(str_backspace_list.back());
+        ui->out_txt->setText(new_txt);
+    }
+
 }
 Plink_monitor::~Plink_monitor()
 {
