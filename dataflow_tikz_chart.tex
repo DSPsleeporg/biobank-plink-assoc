@@ -18,10 +18,10 @@
 \begin{document}
 
 \begin{tikzpicture}[node distance = 5cm, auto]
-\node[block,fill=red!20](DA_G_map){UK Biobank genotype maps (data field \texttt{22418})};
-\node[block,fill=red!20, below of = DA_G_map ](DA_G_raw){UK Biobank genotype calls (data field \texttt{22418})};
+\node[block,fill=red!20](DA_G_map){Genotype maps (location-allele correspondence)};
+\node[block,fill=red!20, below of = DA_G_map ](DA_G_raw){Genotype calls (genome sequence)};
 \node (aux_DA_up) at($(DA_G_map)!0.7!(DA_G_raw)$) {};
-\node[block,fill=red!20,below of = DA_G_raw](DA_P){Sleep pattern clustering results};
+\node[block,fill=red!20,below of = DA_G_raw](DA_P){Continuous or scalar phenotype};
 \node (aux_DA_down) at($(DA_G_raw)!0.7!(DA_P)$) {};
 \node[block,right of = DA_G_map,fill=green!20](DP_G_mformat){Genotype map ASCII file parse};
 \node[block,right of = aux_DA_up,fill=green!20](DP_G_format){Combined Geno/phenotype file conversion};
@@ -38,10 +38,10 @@
 \path(DP_P_format)edge[line,color=blue]node[text width = 6em](DP_P2G){binary/scalar phenotype map}(DP_G_format);
 \path(DP_partition_input)edge[line,color=blue,dashed]node(DP_partition_to_parse){discrete}(DP_P_format);
 \node[block,fill=green!20,right of = DP_C] (AS) {Find potential genes using \texttt{plink --assoc}};
-\path(DP_C)edge[line]node(DP_C_2_AS){proxy \texttt{bed}}(AS);
-\node[block,fill=blue!20, right of = DP_G_format, node distance = 42.5em] (PP_G) {Parse the result by lookup the original allele.};
+\path(DP_C)edge[line]node(DP_C_2_AS){temp files}(AS);
+\node[block,fill=blue!20, right of = DP_G_format, node distance = 42.5em] (PP_G) {Association result};
 \path(AS)edge[line]node(AS_2_PP_G){SNP list}(PP_G);
-\path(DP_G_mformat)edge[line]node(DP_G_LUT_PP){allele lookup table} (PP_G);
+%\path(DP_G_mformat)edge[line]node(DP_G_LUT_PP){allele lookup table} (PP_G);
 \path(DP_G_mformat)edge[line,color=blue]node(DP_G_m2r){proxy genotype map}(DP_G_format);
 %Titles: 
 \node[above of = DA_G_raw,node distance = 18em](DA_t){\large \textbf{Data acquisition}};
@@ -49,7 +49,7 @@
 \node[above of = AS,node distance = 18em](DA_t){\large \textbf{Association}};
 \node[right of = DA_t, node distance = 14em](PP_t){\large \textbf{Post-processing}};
 %Legends:
-\node[right of = DA_P,node distance = 17em,fill=blue!20](L_ip){In progress};
+\node[right of = DA_P,node distance = 17em,fill=blue!20](L_ip){Program output};
 \node[right of = L_ip,node distance = 12em, fill=green!20](L_C){Completed};
 \node[right of = L_C,node distance = 12em, fill=gray!20](L_H){On hold};
 \node[right of = L_H, node distance = 12em, fill=red!20](L_U){User input};
