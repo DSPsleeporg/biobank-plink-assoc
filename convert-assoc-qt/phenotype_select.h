@@ -2,7 +2,7 @@
 #define PHENOTYPE_SELECT_H
 
 #include <QDialog>
-#include "../../convert/phenotype_convert.h"
+#include "../convert/phenotype_convert.h"
 namespace Ui {
 class Phenotype_select;
 }

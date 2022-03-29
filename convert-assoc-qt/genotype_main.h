@@ -1,6 +1,6 @@
 #ifndef GENOTYPE_MAIN_H
 #define GENOTYPE_MAIN_H
-#include "../../convert/genotype_convert.h"
+#include "../convert/genotype_convert.h"
 #include <QDialog>
 #include <QTableWidget>
 #include <QTableView>

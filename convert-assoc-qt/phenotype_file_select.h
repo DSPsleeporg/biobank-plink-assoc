@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include <QThread>
-#include "../../convert/phenotype_convert.h"
+#include "../convert/phenotype_convert.h"
 
 namespace Ui {
 class Phenotype_file_select;

@@ -2,8 +2,8 @@
 #include "phenotype_select.h"
 #include "exception_dialog.h"
 #include "plink_monitor.h"
-#include "..\..\convert\genotype_convert.h"
-#include "..\..\convert\phenotype_convert.h"
+#include "../convert/genotype_convert.h"
+#include "../convert/phenotype_convert.h"
 #include "genotype_main.h"
 #include <QApplication>
 #include <QLocale>

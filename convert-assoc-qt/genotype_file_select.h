@@ -1,7 +1,7 @@
 #ifndef GENOTYPE_FILE_SELECT_H
 #define GENOTYPE_FILE_SELECT_H
 #include <QDialog>
-#include "../../convert/genotype_convert.h"
+#include "../convert/genotype_convert.h"
 namespace Ui {
 class Genotype_file_select;
 }
