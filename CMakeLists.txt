@@ -10,16 +10,17 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(REPO_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+set(REPO_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(PLINK_SOURCE_DIR ${REPO_ROOT_DIR}/plink_1.9)
-set(PLINK_BINARY_DIR ${PLINK_SOURCE_DIR}/build)
+set(PLINK_BINARY_DIR ${PROJECT_BINARY}/plink)
 set(CONVERT_SOURCE_DIR ${REPO_ROOT_DIR}/convert)
 set(TEST_SOURCE_DIR ${REPO_ROOT_DIR}/test-vsproj)
 set(GUI_SOURCE_DIR ${REPO_ROOT_DIR}/convert-assoc-qt/convert_assoc)
 find_package(QT NAMES Qt6 COMPONENTS Widgets LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
-add_subdirectory(${PLINK_SOURCE_DIR} ${PLINK_BINARY_DIR})
+add_subdirectory(${PLINK_SOURCE_DIR})
 set(TS_FILES convert_assoc_en_US.ts)
+list(TRANSFORM TS_FILES PREPEND ${GUI_SOURCE_DIR}/)
 set(GUI_SOURCES
     main.cpp
     genotype_map_select.cpp
@@ -29,6 +30,7 @@ set(GUI_SOURCES
     exception_dialog.cpp
     info_dialog.cpp
     genotype_main.cpp
+    plink_monitor.cpp
     genotype_map_select.h
     phenotype_select.h
     phenotype_file_select.h
@@ -36,6 +38,7 @@ set(GUI_SOURCES
     exception_dialog.h
     info_dialog.h
     genotype_main.h
+    plink_monitor.h
     genotype_map_select.ui
     phenotype_select.ui
     phenotype_file_select.ui
@@ -43,6 +46,7 @@ set(GUI_SOURCES
     exception_dialog.ui
     info_dialog.ui
     genotype_main.ui
+    plink_monitor.ui
 )
 list(TRANSFORM GUI_SOURCES PREPEND ${GUI_SOURCE_DIR}/)
 set(CONVERT_SOURCES

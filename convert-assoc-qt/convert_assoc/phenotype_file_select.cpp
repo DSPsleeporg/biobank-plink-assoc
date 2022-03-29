@@ -2,7 +2,7 @@
 #include "ui_phenotype_file_select.h"
 #include <QFile>
 #include <QTextStream>
-#include <info_dialog.h>
+#include "info_dialog.h"
 Phenotype_file_compute::Phenotype_file_compute(Phenotype_map& _ph_map_ref,const Phenotype_flags& _ph_flag_ref, const QString& _ph_filename, QObject* parent):
     QThread(parent),
     _ph_map_ref(_ph_map_ref),_ph_flag_ref(_ph_flag_ref),_ph_filename(_ph_filename){}
